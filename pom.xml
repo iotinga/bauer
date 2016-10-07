@@ -3,6 +3,12 @@
   <groupId>it.netgrid</groupId>
   <artifactId>bauer</artifactId>
   <version>0.0.1</version>
+  <packaging>pom</packaging>
   <name>Bauer</name>
-  <description>A Simple Messaging Facade	</description>
+  <description>A Simple Message Facade</description>
+  <modules>
+  	<module>bauer-core</module>
+  	<module>bauer-producer</module>
+  	<module>bauer-consumer</module>
+  </modules>
 </project>

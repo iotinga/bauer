@@ -11,4 +11,23 @@
   	<module>bauer-producer</module>
   	<module>bauer-consumer</module>
   </modules>
+	
+	<properties>
+		<version.java>1.8</version.java>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
+					<!-- IMPORTANT -->
+					<useIncrementalCompilation>false</useIncrementalCompilation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

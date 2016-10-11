@@ -1,1 +1,4 @@
 /target/
+bauer-consumer/target/classes
+bauer-core/target/classes
+bauer-core/target/test-classes

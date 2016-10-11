@@ -3,6 +3,31 @@
   <groupId>it.netgrid</groupId>
   <artifactId>bauer</artifactId>
   <version>0.0.1</version>
+  <packaging>pom</packaging>
   <name>Bauer</name>
-  <description>A Simple Messaging Facade	</description>
+  <description>A Simple Message Facade</description>
+  <modules>
+  	<module>bauer-core</module>
+  	<module>bauer-producer</module>
+  	<module>bauer-consumer</module>
+  </modules>
+	
+	<properties>
+		<version.java>1.8</version.java>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
+					<!-- IMPORTANT -->
+					<useIncrementalCompilation>false</useIncrementalCompilation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

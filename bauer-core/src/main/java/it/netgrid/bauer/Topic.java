@@ -1,6 +1,8 @@
 package it.netgrid.bauer;
 
 public interface Topic<E> {
+	
+	public String getName();
 
 	public void addHandler(EventHandler<E> handler);
 	

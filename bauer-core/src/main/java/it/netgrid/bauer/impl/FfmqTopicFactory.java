@@ -11,4 +11,10 @@ public class FfmqTopicFactory implements ITopicFactory {
 		return null;
 	}
 
+	@Override
+	public <E> Topic<E> getTopic(String name, String username, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

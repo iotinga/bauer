@@ -5,4 +5,5 @@ public interface TopicFactoyBinder {
 	public ITopicFactory getTopicFactory();
 
     public String getTopicFactoryClassStr();
+    
 }

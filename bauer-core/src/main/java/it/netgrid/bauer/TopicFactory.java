@@ -1,18 +1,29 @@
 package it.netgrid.bauer;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Properties;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.netgrid.bauer.helpers.NOPTopicFactory;
 import it.netgrid.bauer.helpers.SubstituteTopicFactory;
 import it.netgrid.bauer.helpers.Util;
 import it.netgrid.bauer.impl.StaticTopicBinder;
 
-public final class TopicFactory {
+public final class TopicFactory implements ITopicFactory {
+    
+    private static final Logger log = LoggerFactory.getLogger(TopicFactory.class);
+    
+	private static final String DEFAULT_CONFIG_PROPERTIES_NAME = "bauer.properties";
 	
     static final int UNINITIALIZED = 0;
     static final int ONGOING_INITIALIZATION = 1;
@@ -31,6 +42,8 @@ public final class TopicFactory {
     static boolean DETECT_TOPIC_NAME_MISMATCH = Util.safeGetBooleanSystemProperty(DETECT_TOPIC_NAME_MISMATCH_PROPERTY);
 
     static private final String[] API_COMPATIBILITY_LIST = new String[] { "1.0" };
+    
+    private static Properties properties;
 
 	private TopicFactory() {}
 
@@ -175,16 +188,12 @@ public final class TopicFactory {
             Util.report("Actual binding is of type [" + StaticTopicBinder.getSingleton().getTopicFactoryClassStr() + "]");
         }
     }
-	
-    public static <E> Topic<E> getTopic(String name) {
+    
+	@Override
+	public <E> Topic<E> getTopic(String name) {
         ITopicFactory iTopicFactory = getITopicFactory();
         return iTopicFactory.getTopic(name);
-    }	
-	
-    public static <E> Topic<E> getTopic(Class<E> clazz) {
-        Topic<E> logger = getTopic(clazz.getName());
-        return logger;
-    }
+	}
 	
     /**
      * Return the {@link ITopicFactory} instance in use.
@@ -217,4 +226,62 @@ public final class TopicFactory {
         }
         throw new IllegalStateException("Unreachable code");
     }
+    
+    // Configuration
+    public static Properties getProperties() {
+    	if(properties == null) {
+    		loadProperties();
+    	}
+    	
+    	return properties;
+    }
+    
+	private static boolean loadPropertiesAsResource(String propertiesResourceName) {
+		if(properties == null) {
+			try(InputStream resourceStream = TopicFactory.class.getClassLoader().getResourceAsStream(propertiesResourceName); ) {
+				properties = new Properties();
+				properties.load(resourceStream);
+			} catch (NullPointerException e) {
+				log.warn("Unable to load properties");
+			} catch (IOException e) {
+				log.warn(String.format("Unable to load config resource: %s", propertiesResourceName), e);
+			}
+		}
+		return properties != null;
+	}
+	
+	private static boolean loadPropertiesFromFile(String filePath) {
+		if(properties == null) {
+			FileInputStream in = null;
+			try {
+				in = new FileInputStream(filePath);
+			} catch (FileNotFoundException e) {
+				log.warn(String.format("Unable to load config file: %s", filePath), e);
+			}
+			
+			if(in != null) {
+				try {
+					properties = new Properties();
+					properties.load(in);
+				} catch (IOException e) {
+					log.warn("Invalid properties file format", e);
+				} finally {
+					try {
+						in.close();
+					} catch (IOException e) {
+						log.debug("Input stream already closed");
+					}	
+				}
+			}
+		}
+		return properties != null;
+	}
+	
+	private static void loadProperties() {
+		if(loadPropertiesFromFile(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
+
+		if(loadPropertiesAsResource(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
+		
+		if (properties == null) properties = new Properties();
+	}
 }

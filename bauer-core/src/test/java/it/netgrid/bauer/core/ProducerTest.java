@@ -41,15 +41,16 @@ public class ProducerTest implements ExceptionListener {
 			conn.start();
 			
 			TopicSession session = conn.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
-			Topic topic = (Topic) session.createTopic("TestTopic");
+			Topic topic = (Topic) session.createTopic("TEST_persistent");
 			
 			MessageProducer producer = session.createProducer(topic);
-			producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 			producer.setTimeToLive(5000);
 			
 			boolean run = true;
+			int count = 0;
 			while(run) {
-				TextMessage message = session.createTextMessage("Hello");
+				TextMessage message = session.createTextMessage(String.format("Hello %d", ++count));
 				producer.send(message);
 				session.commit();
 				try {

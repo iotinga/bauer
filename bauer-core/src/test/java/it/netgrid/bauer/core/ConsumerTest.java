@@ -6,6 +6,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
@@ -40,13 +41,20 @@ public class ConsumerTest {
 			conn.start();
 			TopicSession session = conn.createTopicSession(false, Session.CLIENT_ACKNOWLEDGE);
 			
-			Topic topic = session.createTopic("TestTopic");
+			Topic topic = session.createTopic("TEST_persistent");
 			TopicSubscriber subscriber = session.createDurableSubscriber(topic, "test_subscriber");
 			
 			subscriber.setMessageListener(new MessageListener() {
 				
 				@Override
-				public void onMessage(Message message) {
+				public void onMessage(Message m) {
+					try {
+						TextMessage message = (TextMessage)m;
+						System.out.println(message.getText());
+						message.acknowledge();
+					} catch (JMSException e) {
+						// NOP
+					}
 					return;
 				}
 				

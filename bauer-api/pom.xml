@@ -7,8 +7,17 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>bauer-api</artifactId>
-	<name>Bauer Api</name>
-	<description>A common facade to messaging systems</description>
+	<name>Bauer API</name>
+	<description>Standard Topic-Based Messaging Facade for Java</description>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
 
 	<properties>
 		<version.java>1.8</version.java>
@@ -20,7 +29,7 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

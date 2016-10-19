@@ -195,14 +195,6 @@ public final class TopicFactory implements ITopicFactory {
         return iTopicFactory.getTopic(name);
 	}
 	
-    /**
-     * Return the {@link ITopicFactory} instance in use.
-     * <p/>
-     * <p/>
-     * ITopicFactory instance is bound with this class at compile time.
-     * 
-     * @return the ITopicFactory instance in use
-     */
     public static ITopicFactory getITopicFactory() {
         if (INITIALIZATION_STATE == UNINITIALIZED) {
             synchronized (TopicFactory.class) {

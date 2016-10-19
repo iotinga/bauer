@@ -10,6 +10,7 @@
   	<module>bauer-core</module>
   	<module>bauer-producer</module>
   	<module>bauer-consumer</module>
+  	<module>bauer-api</module>
   </modules>
 	
 	<properties>

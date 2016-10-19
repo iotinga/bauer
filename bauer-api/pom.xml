@@ -6,57 +6,33 @@
 		<artifactId>bauer</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>bauer-consumer</artifactId>
+	<artifactId>bauer-api</artifactId>
+	<name>Bauer Api</name>
+	<description>A common facade to messaging systems</description>
 
 	<properties>
 		<version.java>1.8</version.java>
-		<version.guice>4.1.0</version.guice>
 		<version.junit>4.12</version.junit>
 		<version.jfairy>0.4.3</version.jfairy>
 		<version.slf4j>1.7.21</version.slf4j>
-		<version.log4j>2.6.2</version.log4j>
-		<version.bauer-core>0.0.1</version.bauer-core>
-		<main.path>it.netgrid.bauer.consumer.Main</main.path>
+		<version.gson>2.6.2</version.gson>
+		<version.ffmq>3.0.7</version.ffmq>
 	</properties>
 
 	<dependencies>
+	
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
-			<groupId>it.netgrid</groupId>
-			<artifactId>bauer-core</artifactId>
-			<version>${version.bauer-core}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>${version.guice}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${version.log4j}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${version.log4j}</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${version.slf4j}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
 		<dependency>
-			<groupId>io.codearte.jfairy</groupId>
-			<artifactId>jfairy</artifactId>
-			<version>${version.jfairy}</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
-			<scope>test</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${version.slf4j}</version>
 		</dependency>
 
 	</dependencies>
@@ -122,18 +98,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.6</version>
-				<configuration>
-					<archive>
-						<index>true</index>
-						<manifest>
-							<addClasspath>true</addClasspath>
-						</manifest>
-						<manifestEntries>
-							<Manifest-version>1.0</Manifest-version>
-							<Main-Class>${main.path}</Main-Class>
-						</manifestEntries>
-					</archive>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

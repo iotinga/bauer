@@ -9,20 +9,10 @@ import it.netgrid.bauer.Topic;
 public class SubstituteTopic<E> implements Topic<E> {
 	
 	private final List<EventHandler<E>> handlers = new ArrayList<>();
-	private final String username;
-	private final String password;
 	private final String name;
 	
 	public SubstituteTopic(String name) {
 		this.name = name;
-		this.username = null;
-		this.password = null;
-	}
-	
-	public SubstituteTopic(String name, String username, String password) {
-		this.name = name;
-		this.username = username;
-		this.password = password;
 	}
 
 	@Override
@@ -43,8 +33,7 @@ public class SubstituteTopic<E> implements Topic<E> {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 }

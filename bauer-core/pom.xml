@@ -1,14 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<parent>
 		<groupId>it.netgrid</groupId>
 		<artifactId>bauer</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<artifactId>bauer-core</artifactId>
+	<artifactId>bauer-ffmq</artifactId>
 
 	<properties>
+		<version.parent>0.0.1</version.parent>
 		<version.java>1.8</version.java>
 		<version.junit>4.12</version.junit>
 		<version.jfairy>0.4.3</version.jfairy>
@@ -26,6 +28,12 @@
 	</repositories>
 
 	<dependencies>
+		<dependency>
+			<groupId>it.netgrid</groupId>
+			<artifactId>bauer-api</artifactId>
+			<version>${version.parent}</version>
+		</dependency>
+	
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

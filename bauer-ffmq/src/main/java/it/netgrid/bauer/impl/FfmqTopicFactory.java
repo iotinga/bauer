@@ -56,7 +56,7 @@ public class FfmqTopicFactory implements ITopicFactory {
 
 	@Override
 	public <E> Topic<E> getTopic(String name) {
-		return new FfmqTopic<>(name, this);
+		return new FfmqTopic<E>(name, this);
 	}
 
 	private Context getContext() {

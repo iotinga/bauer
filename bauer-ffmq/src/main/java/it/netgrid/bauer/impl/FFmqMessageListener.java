@@ -64,6 +64,12 @@ public class FFmqMessageListener<E> implements MessageListener {
 				}
 			}
 		}
+		
+		if(done) {
+			log.info(String.format("%s handled message", this.handler.getName()));
+		} else {
+			log.error(String.format("%s max retries reached", this.handler.getName()));
+		}
 	}
 
 	synchronized private boolean handle(E event) {

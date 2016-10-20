@@ -36,7 +36,7 @@ public final class TopicFactory implements ITopicFactory {
     static NOPTopicFactory NOP_FALLBACK_FACTORY = new NOPTopicFactory();
 
     // Support for detecting mismatched logger names.
-    static final String DETECT_TOPIC_NAME_MISMATCH_PROPERTY = "slf4j.detectTopicNameMismatch";
+    static final String DETECT_TOPIC_NAME_MISMATCH_PROPERTY = "bauer.detectTopicNameMismatch";
     static final String JAVA_VENDOR_PROPERTY = "java.vendor.url";
 
     static boolean DETECT_TOPIC_NAME_MISMATCH = Util.safeGetBooleanSystemProperty(DETECT_TOPIC_NAME_MISMATCH_PROPERTY);

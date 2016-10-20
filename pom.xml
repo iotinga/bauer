@@ -1,22 +1,128 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>it.netgrid</groupId>
-  <artifactId>bauer</artifactId>
-  <version>0.0.1</version>
-  <packaging>pom</packaging>
-  <name>Bauer</name>
-  <description>Standard Topic-Based Messaging Facade for Java</description>
-  <modules>
-  	<module>bauer-api</module>
-  	<module>bauer-ffmq</module>
-  </modules>
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>it.netgrid</groupId>
+	<artifactId>bauer</artifactId>
+	<version>0.0.2</version>
+	<packaging>pom</packaging>
+	<name>Bauer</name>
+	<description>Standard Topic-Based Messaging Facade for Java</description>
+	<url>https://bitbucket.org/netgrid/bauer</url>
+	<scm>
+		<url>git@bitbucket.org:netgrid/bauer.git</url>
+		<developerConnection>@netgrid</developerConnection>
+	</scm>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Netgrid</name>
+		<url>http://www.netgrid.it</url>
+	</organization>
+	<developers>
+		<developer>
+			<id>matteo_bissoli</id>
+			<name>Matteo Bissoli</name>
+			<email>matteo.bissoli@netgrid.it</email>
+			<url>http://www.netgrid.it/matteo</url>
+			<organization>Netgrid</organization>
+			<organizationUrl>http://www.netgrid.it</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Italy/Rome</timezone>
+			<properties>
+				<picUrl>http://www.netgrid.it/wp-content/uploads/2014/11/150624-091636-600x600.jpg</picUrl>
+			</properties>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>bauer-api</module>
+		<module>bauer-ffmq</module>
+	</modules>
+
 	<properties>
 		<version.java>1.8</version.java>
 	</properties>
 
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -26,6 +132,24 @@
 					<!-- IMPORTANT -->
 					<useIncrementalCompilation>false</useIncrementalCompilation>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,18 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>it.netgrid</groupId>
-	<artifactId>bauer</artifactId>
-	<version>0.0.2</version>
-	<packaging>pom</packaging>
-	<name>Bauer</name>
+	<parent>
+		<groupId>it.netgrid</groupId>
+		<artifactId>bauer</artifactId>
+		<version>0.0.2</version>
+	</parent>
+	<artifactId>bauer-api</artifactId>
+	<name>Bauer API</name>
 	<description>Standard Topic-Based Messaging Facade for Java</description>
-	<url>https://bitbucket.org/netgrid/bauer</url>
-	<scm>
-		<url>git@bitbucket.org:netgrid/bauer.git</url>
-		<developerConnection>@netgrid</developerConnection>
-	</scm>
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -22,49 +19,33 @@
 		</license>
 	</licenses>
 
-	<organization>
-		<name>Netgrid</name>
-		<url>http://www.netgrid.it</url>
-	</organization>
-	<developers>
-		<developer>
-			<id>matteo_bissoli</id>
-			<name>Matteo Bissoli</name>
-			<email>matteo.bissoli@netgrid.it</email>
-			<url>http://www.netgrid.it/matteo</url>
-			<organization>Netgrid</organization>
-			<organizationUrl>http://www.netgrid.it</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>Italy/Rome</timezone>
-			<properties>
-				<picUrl>http://www.netgrid.it/wp-content/uploads/2014/11/150624-091636-600x600.jpg</picUrl>
-			</properties>
-		</developer>
-	</developers>
-
-	<modules>
-		<module>bauer-api</module>
-		<module>bauer-ffmq</module>
-	</modules>
-
 	<properties>
 		<version.java>1.8</version.java>
+		<version.junit>4.12</version.junit>
+		<version.jfairy>0.4.3</version.jfairy>
+		<version.slf4j>1.7.21</version.slf4j>
+		<version.gson>2.6.2</version.gson>
+		<version.ffmq>3.0.7</version.ffmq>
 	</properties>
 
+	<dependencies>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
@@ -72,17 +53,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.3</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
@@ -148,6 +118,29 @@
 						<goals>
 							<goal>sources</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>${main.path}</mainClass>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+							</transformers>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

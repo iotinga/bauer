@@ -2,6 +2,7 @@ package it.netgrid.bauer.impl;
 
 import java.util.Hashtable;
 
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
@@ -27,7 +28,7 @@ import it.netgrid.bauer.Topic;
 import it.netgrid.bauer.TopicFactory;
 import net.timewalker.ffmq3.FFMQConstants;
 
-public class FfmqTopicFactory implements ITopicFactory {
+public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	
 	private static final Logger log = LoggerFactory.getLogger(FfmqTopicFactory.class);
 	
@@ -102,6 +103,11 @@ public class FfmqTopicFactory implements ITopicFactory {
 	}
 	
 	public TopicSubscriber getTopicSubscriber(TopicSession session, String topicName, String subscriberName) {
+		if(session == null) {
+			log.error(String.format("Unable to create topic in null session: %s %s", topicName, subscriberName));
+			return null;
+		}
+		
 		try {
 			javax.jms.Topic topic = session.createTopic(topicName);
 			return session.createDurableSubscriber(topic, subscriberName);
@@ -115,7 +121,12 @@ public class FfmqTopicFactory implements ITopicFactory {
 		TopicConnection conn;
 		try {
 			conn = this.initTopicConsumerConnection(topicName, subscriberName);
-			return conn.createTopicSession(false, Session.CLIENT_ACKNOWLEDGE);
+			TopicSession session = conn.createTopicSession(false, Session.CLIENT_ACKNOWLEDGE);
+			if(session == null) {
+				log.error(String.format("Unable to create session for: %s %s", topicName, subscriberName));
+				return null;
+			}
+			return session;
 		} catch (JMSException e) {
 			log.error(e.getMessage(), e);
 			return null;
@@ -126,7 +137,9 @@ public class FfmqTopicFactory implements ITopicFactory {
 		TopicConnection conn;
 		try {
 			conn = this.initTopicProducerConnection(topicName);
-			return conn.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+			conn.setExceptionListener(this);
+			conn.start();
+			return conn.createTopicSession(true, Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
 			log.error(e.getMessage(), e);
 			return null;
@@ -204,6 +217,10 @@ public class FfmqTopicFactory implements ITopicFactory {
 	
 	public TextMessage buildMessage(Session session, Object payload) {
 		String json = gson.toJson(payload);
+		if(session == null) {
+			log.error(String.format("Unable to create message in null session: %s", json));
+			return null;
+		}
 		try {
 			return session.createTextMessage(json);
 		} catch (JMSException e) {
@@ -215,5 +232,10 @@ public class FfmqTopicFactory implements ITopicFactory {
 	
 	public <E> MessageListener buildMessageListener(final EventHandler<E> handler) {
 		return new FFmqMessageListener<E>(this, handler);
+	}
+
+	@Override
+	public void onException(JMSException exception) {
+		log.warn(exception.getMessage(), exception);
 	}
 }

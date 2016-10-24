@@ -19,5 +19,4 @@ public class NOPTopic<E> implements Topic<E> {
 	public void post(E event) {
 		// NOP
 	}
-
 }

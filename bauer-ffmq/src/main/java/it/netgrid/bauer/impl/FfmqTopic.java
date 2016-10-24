@@ -41,6 +41,10 @@ public class FfmqTopic<E> implements Topic<E> {
 	public void addHandler(EventHandler<E> handler) {
 		if( ! subscribers.containsKey(handler.getName())) {
 			TopicSubscriber subscriber = this.getSubscriber(handler.getName());
+			if(subscriber == null) {
+				log.error(String.format("%s: %s Unable to add handler", this.name, handler.getName()));
+				return;
+			}
 			try {
 				subscriber.setMessageListener(this.factory.<E>buildMessageListener(handler));
 			} catch (JMSException e) {
@@ -55,14 +59,17 @@ public class FfmqTopic<E> implements Topic<E> {
 	public void post(E event) {
 		if(event == null) return;
 		
-		MessageProducer producer = this.getProducer();
-		TextMessage message = this.factory.buildMessage(this.producerSession, event);
+		TextMessage message = this.factory.buildMessage(this.getProducerSession(), event);
 		
 		if(message == null) return;
 		
+		this.post(message);
+	}
+	
+	private void post(TextMessage message) {
 		try {
-			producer.send(message);
-			this.producerSession.commit();
+			this.getProducer().send(message);
+			this.getProducerSession().commit();
 		} catch (JMSException e) {
 			try {
 				log.warn(String.format("%s:%s", this.name, message.getText()));
@@ -83,10 +90,17 @@ public class FfmqTopic<E> implements Topic<E> {
 		return this.subscribers.get(subscriberName);
 	}
 	
+	private TopicSession getProducerSession() {
+		if(this.producerSession == null) {
+			this.producerSession = this.factory.buildTopicProducerSession(this.name);
+		}
+		
+		return this.producerSession;
+	}
+	
 	private MessageProducer getProducer() {
 		if(this.producer == null) {
-			this.producerSession = this.factory.buildTopicProducerSession(this.name);
-			this.producer = this.factory.getMessageProducer(this.producerSession, this.name);
+			this.producer = this.factory.getMessageProducer(this.getProducerSession(), this.name);
 		}
 		
 		return this.producer;

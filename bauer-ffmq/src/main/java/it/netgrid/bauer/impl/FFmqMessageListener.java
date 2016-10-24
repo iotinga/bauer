@@ -46,7 +46,7 @@ public class FFmqMessageListener<E> implements MessageListener {
 		}
 		
 		int tryCount = 0;
-		boolean done = true;
+		boolean done = false;
 		while( ! done && tryCount < this.factory.getHandlerMaxRetry()) {
 			done = this.handle(event);
 			if(done) {

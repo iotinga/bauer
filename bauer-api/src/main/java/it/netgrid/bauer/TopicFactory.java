@@ -5,21 +5,26 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.netgrid.bauer.helpers.NOPTopicFactory;
+import it.netgrid.bauer.helpers.SubstituteTopic;
+import it.netgrid.bauer.helpers.SubstituteTopicEvent;
 import it.netgrid.bauer.helpers.SubstituteTopicFactory;
 import it.netgrid.bauer.helpers.Util;
 import it.netgrid.bauer.impl.StaticTopicBinder;
 
-public final class TopicFactory implements ITopicFactory {
+public final class TopicFactory {
     
     private static final Logger log = LoggerFactory.getLogger(TopicFactory.class);
     
@@ -58,7 +63,7 @@ public final class TopicFactory implements ITopicFactory {
         }
     }
     
-    private static boolean messageContainsOrgSlf4jImplStaticTopicBinder(String msg) {
+    private static boolean messageContainsOrgBauerjImplStaticTopicBinder(String msg) {
         if (msg == null)
             return false;
         if (msg.contains("it/netgrid/bauer/impl/StaticTopicBinder"))
@@ -80,11 +85,13 @@ public final class TopicFactory implements ITopicFactory {
             StaticTopicBinder.getSingleton();
             INITIALIZATION_STATE = SUCCESSFUL_INITIALIZATION;
             reportActualBinding(staticTopicBinderPathSet);
+            fixSubstituteTopics();
+            replayEvents();
             // release all resources in SUBST_FACTORY
             SUBST_FACTORY.clear();
         } catch (NoClassDefFoundError ncde) {
             String msg = ncde.getMessage();
-            if (messageContainsOrgSlf4jImplStaticTopicBinder(msg)) {
+            if (messageContainsOrgBauerjImplStaticTopicBinder(msg)) {
                 INITIALIZATION_STATE = NOP_FALLBACK_INITIALIZATION;
                 Util.report("Failed to load class \"it.netgrid.bauer.impl.StaticTopicBinder\".");
                 Util.report("Defaulting to no-operation (NOP) logger implementation");
@@ -127,7 +134,7 @@ public final class TopicFactory implements ITopicFactory {
                                 + Arrays.asList(API_COMPATIBILITY_LIST).toString());
             }
         } catch (java.lang.NoSuchFieldError nsfe) {
-            // given our large user base and SLF4J's commitment to backward
+            // given our large user base and BAUER's commitment to backward
             // compatibility, we cannot cry here. Only for implementations
             // which willingly declare a REQUESTED_API_VERSION field do we
             // emit compatibility warnings.
@@ -189,8 +196,7 @@ public final class TopicFactory implements ITopicFactory {
         }
     }
     
-	@Override
-	public <E> Topic<E> getTopic(String name) {
+	public static <E> Topic<E> getTopic(String name) {
         ITopicFactory iTopicFactory = getITopicFactory();
         return iTopicFactory.getTopic(name);
 	}
@@ -213,10 +219,88 @@ public final class TopicFactory implements ITopicFactory {
             throw new IllegalStateException("Failed Bauer initialization");
         case ONGOING_INITIALIZATION:
             // support re-entrant behavior.
-            // See also http://jira.qos.ch/browse/SLF4J-97
             return SUBST_FACTORY;
         }
         throw new IllegalStateException("Unreachable code");
+    }
+    
+    private static void replayEvents() {
+        final LinkedBlockingQueue<SubstituteTopicEvent> queue = SUBST_FACTORY.getEventQueue();
+        final int queueSize = queue.size();
+        int count = 0;
+        final int maxDrain = 128;
+        List<SubstituteTopicEvent> eventList = new ArrayList<SubstituteTopicEvent>(maxDrain);
+        while (true) {
+            int numDrained = queue.drainTo(eventList, maxDrain);
+            if (numDrained == 0)
+                break;
+            for (SubstituteTopicEvent event : eventList) {
+                replaySingleEvent(event);
+                if (count++ == 0)
+                    emitReplayOrSubstituionWarning(event, queueSize);
+            }
+            eventList.clear();
+        }
+    }
+    
+    private static void emitReplayOrSubstituionWarning(SubstituteTopicEvent event, int queueSize) {
+        if (event.getTopic().isDelegateEventAware()) {
+            emitReplayWarning(queueSize);
+        } else if (event.getTopic().isDelegateNOP()) {
+            // nothing to do
+        } else {
+            emitSubstitutionWarning();
+        }
+    }
+    
+    private static void emitReplayWarning(int eventCount) {
+        Util.report("A number (" + eventCount + ") of topic calls during the initialization phase have been intercepted and are");
+        Util.report("now being replayed. These are subject to the filtering rules of the underlying topics system.");
+    }
+    
+    private static void emitSubstitutionWarning() {
+        Util.report("The following set of substitute topic may have been accessed");
+        Util.report("during the initialization phase. Topic calls during this");
+        Util.report("phase were not honored. However, subsequent topic calls to these");
+        Util.report("topics will work as normally expected.");
+    }
+    
+    private static void replaySingleEvent(SubstituteTopicEvent event) {
+        if (event == null)
+            return;
+
+        SubstituteTopic<?> substTopic = event.getTopic();
+        String topicName = substTopic.getName();
+        if (substTopic.isDelegateNull()) {
+            throw new IllegalStateException("Delegate topic cannot be null at this state.");
+        }
+
+        if (substTopic.isDelegateNOP()) {
+            // nothing to do
+        } else if (substTopic.isDelegateEventAware()) {
+        	switch(event.getAction()) {
+        	case ADD_HANDLER:
+        		substTopic.replayAddHandler(event.getHandler());
+        	break;
+        	case POST:
+        		substTopic.replayPost(event.getEvent());
+    		break;
+        	}
+        } else {
+            Util.report(topicName);
+        }
+    }
+    
+    private static void fixSubstituteTopics() {
+        synchronized (SUBST_FACTORY) {
+            SUBST_FACTORY.postInitialization();
+            for (SubstituteTopic<?> substTopic : SUBST_FACTORY.getTopics()) {
+            	substTopic.updateDelegate();
+//            	Topic<?> topic = getTopic(substTopic.getName());
+//            	substTopic.setDelegate(topic);
+            }
+        }
+
     }
     
     // Configuration
@@ -234,9 +318,9 @@ public final class TopicFactory implements ITopicFactory {
 				properties = new Properties();
 				properties.load(resourceStream);
 			} catch (NullPointerException e) {
-				log.warn("Unable to load properties");
+				log.debug("Unable to load properties");
 			} catch (IOException e) {
-				log.warn(String.format("Unable to load config resource: %s", propertiesResourceName), e);
+				log.debug(String.format("Unable to load config resource: %s", propertiesResourceName), e);
 			}
 		}
 		return properties != null;
@@ -248,7 +332,7 @@ public final class TopicFactory implements ITopicFactory {
 			try {
 				in = new FileInputStream(filePath);
 			} catch (FileNotFoundException e) {
-				log.warn(String.format("Unable to load config file: %s", filePath), e);
+				log.debug(String.format("Unable to load config file: %s", filePath), e);
 			}
 			
 			if(in != null) {
@@ -274,6 +358,9 @@ public final class TopicFactory implements ITopicFactory {
 
 		if(loadPropertiesAsResource(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
 		
-		if (properties == null) properties = new Properties();
+		if (properties == null) {
+			log.info(String.format("No %s properties found. Run with defaults.", DEFAULT_CONFIG_PROPERTIES_NAME));
+			properties = new Properties();
+		}
 	}
 }

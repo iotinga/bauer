@@ -17,11 +17,11 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     }
 
     /**
-     * Declare the version of the SLF4J API this implementation is compiled against. 
+     * Declare the version of the BAUER API this implementation is compiled against. 
      * The value of this field is modified with each major release. 
      */
     // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.6.99"; // !final
+    public static String REQUESTED_API_VERSION = "1.0"; // !final
 
     private static final String topicFactoryClassStr = FfmqTopicFactory.class.getName();
 

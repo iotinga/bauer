@@ -59,4 +59,20 @@ Binding for [MQTT](http://mqtt.org/), a M2M/Internet-of-Things connectivity prot
 #### bauer-kafka [DEVELOPMENT] ####
 Binding for [Apache Kafka](https://kafka.apache.org/), a distributed streaming platform. Kafka is run as a cluster on one or more servers. Ideal for real-time streaming data pipelines that reliably get data between systems or applications.
 
+To switch event-queue framework, just replace Bauer bindings on your class path. For example, to switch from FFMQ to Kafka, just replace bauer-ffmq with bauer-kafka.
+
+Bauer does not rely on any special class loader machinery. In fact, each Bauer binding is hardwired at compile time to use one and only one specific event-queue framework. In your code, in addition to bauer-api, you simply drop one and only one binding of your choice onto the appropriate class path location. Do not place more than one binding on your class path.
+
+### Concepts ###
+Bauer relies upon three core concepts: events, topics and event handlers. 
+
+#### Event ####
+An event is a batch of data.
+
+#### Topic #### 
+A topic is a stream of events of the same kind, sent at different times from different sources.
+
+#### Event Handlers ####
+Piece of code executed each time a new event occurs in the topic which holds the code
+
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)

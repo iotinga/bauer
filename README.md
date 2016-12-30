@@ -69,7 +69,7 @@ Bauer relies upon three core concepts: events, topics and event handlers.
 #### Event ####
 An event is a batch of data.
 
-#### Topic #### 
+#### Topic ####
 A topic is a stream of events of the same kind, sent at different times from different sources.
 
 #### Event Handlers ####

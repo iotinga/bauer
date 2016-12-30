@@ -48,6 +48,7 @@
 	<modules>
 		<module>bauer-api</module>
 		<module>bauer-ffmq</module>
+		<module>bauer-kafka</module>
 	</modules>
 
 	<properties>

@@ -75,4 +75,7 @@ A topic is a stream of events of the same kind, sent at different times from dif
 #### Event Handlers ####
 Piece of code executed each time a new event occurs in the topic which holds the code
 
+### ...one more thing! ###
+By default, Bauer uses JSON for events de/serialization. We choose JSON interoperability over binary efficiency.
+
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)

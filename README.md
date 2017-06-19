@@ -10,7 +10,7 @@ Bauer has been written with esteem and respect for slf4j, the world famous Simpl
 <dependency>
   <groupId>it.netgrid</groupId>
   <artifactId>bauer-api</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 

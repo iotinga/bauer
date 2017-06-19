@@ -28,6 +28,7 @@ public final class TopicFactory {
     
     private static final Logger log = LoggerFactory.getLogger(TopicFactory.class);
     
+    private static String configPropertiesPath = null;
 	private static final String DEFAULT_CONFIG_PROPERTIES_NAME = "bauer.properties";
 	
     static final int UNINITIALIZED = 0;
@@ -54,6 +55,18 @@ public final class TopicFactory {
 
     static void reset() {
         INITIALIZATION_STATE = UNINITIALIZED;
+    }
+
+    public final static void setConfigPropertiesPath(String path) {
+        configPropertiesPath = path;
+    }
+
+    public final static String getConfigPropertiesPath() {
+        if(configPropertiesPath == null) {
+            return DEFAULT_CONFIG_PROPERTIES_NAME;
+        }
+
+        return configPropertiesPath;
     }
 
     private final static void performInitialization() {
@@ -354,7 +367,7 @@ public final class TopicFactory {
 	}
 	
 	private static void loadProperties() {
-		if(loadPropertiesFromFile(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
+		if(loadPropertiesFromFile(getConfigPropertiesPath())) return;
 
 		if(loadPropertiesAsResource(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
 		

@@ -14,14 +14,14 @@
 	<parent>
 		<groupId>it.netgrid</groupId>
 		<artifactId>bauer</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4</version>
 	</parent>
 	<artifactId>bauer-ffmq</artifactId>
 	<name>Bauer FFMQ binder</name>
 	<description>A Bauer binder for FFMQ</description>
 
 	<properties>
-		<version.parent>0.0.2</version.parent>
+		<version.parent>0.0.4</version.parent>
 		<version.java>1.8</version.java>
 		<version.junit>4.12</version.junit>
 		<version.jfairy>0.4.3</version.jfairy>

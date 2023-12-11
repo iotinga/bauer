@@ -18,7 +18,7 @@ import javax.naming.NamingException;
 
 import org.junit.Test;
 
-import net.timewalker.ffmq3.FFMQConstants;
+import net.timewalker.ffmq4.FFMQConstants;
 
 public class ConsumerTest {
 

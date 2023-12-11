@@ -3,7 +3,7 @@
   <parent>
     <artifactId>bauer</artifactId>
     <groupId>it.netgrid</groupId>
-    <version>0.0.2</version>
+    <version>0.0.10</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>bauer-ffmq</artifactId>
@@ -169,13 +169,13 @@
     </dependency>
   </dependencies>
   <properties>
+    <version.ffmq>4.0.14</version.ffmq>
+    <version.java>11</version.java>
     <version.junit>4.12</version.junit>
+    <version.slf4j>2.0.9</version.slf4j>
+    <version.parent>0.0.10</version.parent>
+    <version.gson>2.10.1</version.gson>
     <version.jfairy>0.4.3</version.jfairy>
-    <version.gson>2.6.2</version.gson>
-    <version.java>1.8</version.java>
-    <version.parent>0.0.2</version.parent>
-    <version.slf4j>1.7.21</version.slf4j>
-    <version.ffmq>3.0.7</version.ffmq>
   </properties>
 </project>
 

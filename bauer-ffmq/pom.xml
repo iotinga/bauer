@@ -22,12 +22,12 @@
 
 	<properties>
 		<version.parent>0.0.9</version.parent>
-		<version.java>1.8</version.java>
+		<version.java>11</version.java>
 		<version.junit>4.12</version.junit>
 		<version.jfairy>0.4.3</version.jfairy>
-		<version.slf4j>1.7.21</version.slf4j>
-		<version.gson>2.6.2</version.gson>
-		<version.ffmq>3.0.7</version.ffmq>
+		<version.slf4j>2.0.9</version.slf4j>
+		<version.gson>2.10.1</version.gson>
+		<version.ffmq>4.0.14</version.ffmq>
 	</properties>
 
 	<repositories>
@@ -54,7 +54,7 @@
 		<!-- https://mvnrepository.com/artifact/net.timewalker.ffmq/ffmq3-core -->
 		<dependency>
 			<groupId>net.timewalker.ffmq</groupId>
-			<artifactId>ffmq3-core</artifactId>
+			<artifactId>ffmq4-core</artifactId>
 			<version>${version.ffmq}</version>
 		</dependency>
 
@@ -79,6 +79,12 @@
 			<artifactId>junit</artifactId>
 			<version>${version.junit}</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.1</version>
 		</dependency>
 
 	</dependencies>

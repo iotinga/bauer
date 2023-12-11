@@ -26,7 +26,7 @@ import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.ITopicFactory;
 import it.netgrid.bauer.Topic;
 import it.netgrid.bauer.TopicFactory;
-import net.timewalker.ffmq3.FFMQConstants;
+import net.timewalker.ffmq4.FFMQConstants;
 
 public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	

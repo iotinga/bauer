@@ -22,7 +22,15 @@ import it.netgrid.bauer.helpers.SubstituteTopic;
 import it.netgrid.bauer.helpers.SubstituteTopicEvent;
 import it.netgrid.bauer.helpers.SubstituteTopicFactory;
 import it.netgrid.bauer.helpers.Util;
+
 import it.netgrid.bauer.impl.StaticTopicBinder;
+
+
+/**
+ * see https://github.com/qos-ch/slf4j/tree/v_1.7.21/slf4j-api
+ * reference implementation https://github.com/qos-ch/slf4j/tree/v_1.7.21/slf4j-api
+ * SLF4J 1.7.21
+ */
 
 public final class TopicFactory {
     
@@ -107,7 +115,7 @@ public final class TopicFactory {
             if (messageContainsOrgBauerjImplStaticTopicBinder(msg)) {
                 INITIALIZATION_STATE = NOP_FALLBACK_INITIALIZATION;
                 Util.report("Failed to load class \"it.netgrid.bauer.impl.StaticTopicBinder\".");
-                Util.report("Defaulting to no-operation (NOP) logger implementation");
+                Util.report("Defaulting to no-operation (NOP) topic implementation");
             } else {
                 failedBinding(ncde);
                 throw ncde;

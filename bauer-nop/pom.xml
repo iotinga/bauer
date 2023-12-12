@@ -1,18 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>it.netgrid</groupId>
-	<artifactId>bauer</artifactId>
-	<version>0.0.11</version>
-	<packaging>pom</packaging>
-	<name>Bauer</name>
-	<description>Standard Topic-Based Messaging Facade for Java</description>
-	<url>https://bitbucket.org/netgrid/bauer</url>
-	<scm>
-		<url>git@bitbucket.org:netgrid/bauer.git</url>
-		<developerConnection>@netgrid</developerConnection>
-	</scm>
+	<parent>
+		<groupId>it.netgrid</groupId>
+		<artifactId>bauer</artifactId>
+		<version>0.0.11</version>
+	</parent>
+	<artifactId>bauer-nop</artifactId>
+	<name>Bauer NOP</name>
+	<description>A Bauer NOP binder</description>
+
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -22,50 +19,28 @@
 		</license>
 	</licenses>
 
-	<organization>
-		<name>Netgrid</name>
-		<url>http://www.netgrid.it</url>
-	</organization>
-	<developers>
-		<developer>
-			<id>matteo_bissoli</id>
-			<name>Matteo Bissoli</name>
-			<email>matteo.bissoli@netgrid.it</email>
-			<url>http://www.netgrid.it/matteo</url>
-			<organization>Netgrid</organization>
-			<organizationUrl>http://www.netgrid.it</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>Italy/Rome</timezone>
-			<properties>
-				<picUrl>http://www.netgrid.it/wp-content/uploads/2014/11/150624-091636-600x600.jpg</picUrl>
-			</properties>
-		</developer>
-	</developers>
-
-	<modules>
-		<module>bauer-api</module>
-		<module>bauer-ffmq</module>
-		<module>bauer-nop</module>
-	</modules>
-
 	<properties>
 		<version.java>11</version.java>
+		<version.slf4j>2.0.9</version.slf4j>
+		<version.parent>0.0.11</version.parent>
 	</properties>
 
+	<dependencies>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>it.netgrid</groupId>
+			<artifactId>bauer-api</artifactId>
+			<version>${version.parent}</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
@@ -74,20 +49,9 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.13</version>
-				<extensions>true</extensions>
-				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>1.5</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>

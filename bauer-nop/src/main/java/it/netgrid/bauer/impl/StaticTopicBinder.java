@@ -29,11 +29,14 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     private final ITopicFactory topicFactory;
 
     private StaticTopicBinder() {
-        throw new UnsupportedOperationException("This code should have never made it into bauer-api.jar");    }
+    	topicFactory = new SubstituteTopicFactory();
+    }
 
     public ITopicFactory getTopicFactory() {
-        throw new UnsupportedOperationException("This code should never make it into bauer-api.jar");    }
+        return topicFactory;
+    }
 
     public String getTopicFactoryClassStr() {
-        throw new UnsupportedOperationException("This code should never make it into bauer-api.jar");    }
+        return topicFactoryClassStr;
+    }
 }

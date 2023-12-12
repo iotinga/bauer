@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>it.netgrid</groupId>
         <artifactId>bauer</artifactId>
-        <version>0.0.11</version>
+        <version>0.0.12</version>
     </parent>
     <artifactId>bauer-api</artifactId>
     <name>Bauer API</name>
@@ -129,7 +128,7 @@
                 <configuration>
                     <target>
                         <echo>Removing bauer-api's dummy StaticTopicBinder</echo>
-                        <delete dir="target/classes/it/netgrid/bauer/impl"/>
+                        <delete dir="target/classes/it/netgrid/bauer/impl" />
                     </target>
                 </configuration>
             </plugin>

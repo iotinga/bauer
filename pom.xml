@@ -1,16 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.netgrid</groupId>
 	<artifactId>bauer</artifactId>
-	<version>0.0.11</version>
+	<version>0.0.12</version>
 	<packaging>pom</packaging>
 	<name>Bauer</name>
 	<description>Standard Topic-Based Messaging Facade for Java</description>
 	<url>https://bitbucket.org/netgrid/bauer</url>
 	<scm>
-		<url>git@bitbucket.org:netgrid/bauer.git</url>
+		<url>git@bitbucket.org:scmb/bauer.git</url>
 		<developerConnection>@netgrid</developerConnection>
 	</scm>
 	<licenses>

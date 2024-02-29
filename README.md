@@ -81,3 +81,7 @@ By default, Bauer uses JSON for events de/serialization. We choose JSON interope
 
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)
 
+# Deploy #
+```
+mvn deploy
+```

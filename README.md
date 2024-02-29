@@ -10,7 +10,7 @@ Bauer has been written with esteem and respect for slf4j, the world famous Simpl
 <dependency>
   <groupId>it.netgrid</groupId>
   <artifactId>bauer-api</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.13</version>
 </dependency>
 ```
 
@@ -51,7 +51,7 @@ myCustomTopic.addHandler(new EventHandler<MyCustomPayload>() {
 As mentioned previously, Bauer supports various topic-based event-queues frameworks. Some of them still in development. The Bauer distribution ships with serveral jar files referred as "Bauer bindings", with each binding corresponding to a supported framework.
 
 #### bauer-ffmq ####
-Binding for [FFMQ 3.0.7](http://timewalker74.github.io/ffmq/), a JMS compatible ultra-light weight message queue system.
+Binding for [FFMQ 4.0.14](http://timewalker74.github.io/ffmq/), a JMS compatible ultra-light weight message queue system.
 
 #### bauer-mqtt [DEVELOPMENT] ####
 Binding for [MQTT](http://mqtt.org/), a M2M/Internet-of-Things connectivity protocol. It was designed as an extremely lightweight publish/subscribe messaging transport.
@@ -80,3 +80,4 @@ By default, Bauer uses JSON for events de/serialization. We choose JSON interope
 
 
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)
+

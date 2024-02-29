@@ -84,6 +84,8 @@ By default, Bauer uses JSON for events de/serialization. We choose JSON interope
 # Deploy #
 you need access to https://oss.sonatype.org/
 
+check your  ~/.m2/settings.xml
+
 ```
 <settings>
   <servers>

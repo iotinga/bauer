@@ -82,6 +82,22 @@ By default, Bauer uses JSON for events de/serialization. We choose JSON interope
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)
 
 # Deploy #
+you need access to https://oss.sonatype.org/
+
+```
+<settings>
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>USERNAME</username>
+      <password>PASSWORD</password>
+    </server>
+  </servers>
+</settings>
+```
+
+then run in repo
+
 ```
 mvn deploy
 ```

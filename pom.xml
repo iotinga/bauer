@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.netgrid</groupId>
 	<artifactId>bauer</artifactId>
-	<version>0.0.15-SNAPSHOT</version>
+	<version>0.0.15</version>
 	<packaging>pom</packaging>
 	<name>Bauer</name>
 	<description>Standard Topic-Based Messaging Facade for Java</description>
@@ -12,7 +12,8 @@
 		<connection>scm:git:git://github.com:iotinga/bauer.git</connection>
 		<developerConnection>scm:git:git://github.com:iotinga/bauer.git</developerConnection>
 		<url>https://github.com/iotinga/bauer</url>
-	</scm>
+	  <tag>bauer-0.0.15</tag>
+  </scm>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>

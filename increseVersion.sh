@@ -1,3 +1,2 @@
 #!/bin/bash
-mvn -B release:prepare release:perform
-mvn deploy
+mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit 

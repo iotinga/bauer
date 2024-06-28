@@ -6,17 +6,9 @@
     <version>0.0.14</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>bauer-ffmq</artifactId>
-  <name>Bauer FFMQ binder</name>
-  <description>A Bauer binder for FFMQ</description>
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-      <comments>A business-friendly OSS license</comments>
-    </license>
-  </licenses>
+  <artifactId>bauer-mqtt</artifactId>
+  <name>Bauer MQTT binder</name>
+  <description>A Bauer binder for MQTT supporting also $share and $retain topics. It is based on the PAHO MQTT library.</description>
   <build>
     <resources>
       <resource>
@@ -109,6 +101,10 @@
   </build>
   <repositories>
     <repository>
+      <id>Eclipse Paho Repo</id>
+      <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+    <repository>
       <id>repository.jboss.org-public</id>
       <name>JBoss.org Maven repository</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
@@ -116,11 +112,27 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>io.codearte.jfairy</groupId>
+      <groupId>com.devskiller</groupId>
       <artifactId>jfairy</artifactId>
-      <version>0.4.3</version>
+      <version>0.6.5</version>
       <scope>test</scope>
       <exclusions>
+        <exclusion>
+          <artifactId>snakeyaml-engine</artifactId>
+          <groupId>org.snakeyaml</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-lang3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-text</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-math3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
         <exclusion>
           <artifactId>guava</artifactId>
           <groupId>com.google.guava</groupId>
@@ -130,28 +142,12 @@
           <groupId>com.google.inject</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>iban4j</artifactId>
-          <groupId>org.iban4j</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>guice-assistedinject</artifactId>
           <groupId>com.google.inject.extensions</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>joda-time</artifactId>
-          <groupId>joda-time</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>reflections</artifactId>
-          <groupId>org.reflections</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang3</artifactId>
-          <groupId>org.apache.commons</groupId>
+          <artifactId>iban4j</artifactId>
+          <groupId>org.iban4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -169,12 +165,14 @@
     </dependency>
   </dependencies>
   <properties>
-    <version.ffmq>4.0.14</version.ffmq>
+    <version.paho>1.2.5</version.paho>
     <version.java>11</version.java>
-    <version.junit>4.12</version.junit>
     <version.slf4j>2.0.9</version.slf4j>
-    <version.gson>2.10.1</version.gson>
-    <version.jfairy>0.4.3</version.jfairy>
+    <version.junit>4.12</version.junit>
+    <version.jackson-cbor>2.17.1</version.jackson-cbor>
+    <version.mockito>5.12.0</version.mockito>
+    <version.javaee-api>8.0.1</version.javaee-api>
+    <version.jfairy>0.6.5</version.jfairy>
   </properties>
 </project>
 

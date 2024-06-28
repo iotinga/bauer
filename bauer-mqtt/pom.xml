@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>it.netgrid</groupId>
 		<artifactId>bauer</artifactId>
-		<version>0.0.13</version>
+		<version>0.0.14</version>
 	</parent>
 
     <artifactId>bauer-mqtt</artifactId>
@@ -19,7 +19,7 @@
         <version.paho>1.2.5</version.paho>
         <version.jackson-cbor>2.17.1</version.jackson-cbor>
 		<version.junit>4.12</version.junit>
-		<version.jfairy>0.4.3</version.jfairy>
+		<version.jfairy>0.6.5</version.jfairy>
         <version.mockito>5.12.0</version.mockito>
         <version.javaee-api>8.0.1</version.javaee-api>
     </properties>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>com.devskiller</groupId>
 			<artifactId>jfairy</artifactId>
-			<version>0.6.5</version>
+			<version>${version.jfairy}</version>
 			<scope>test</scope>
 		</dependency>
 

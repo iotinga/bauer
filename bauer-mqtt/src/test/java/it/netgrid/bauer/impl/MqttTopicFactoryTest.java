@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 
 import it.netgrid.bauer.Topic;
 

@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 import it.netgrid.bauer.impl.EventExample;
 
 public class CBORMqttMessageFactoryTest {

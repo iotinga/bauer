@@ -52,9 +52,9 @@ public class StaticTopicBinderTest {
                 Integer.parseInt(StaticTopicBinder.MQTT_CONN_TIMEOUT_DEFAULT));
         assertEquals(result.getKeepAliveInterval(),
                 Integer.parseInt(StaticTopicBinder.MQTT_KEEP_ALIVE_INTERVAL_DEFAULT));
-        assertEquals(result.getUserName(), StaticTopicBinder.MQTT_USER_DEFAULT);
-        assertEquals(new String(result.getPassword()), StaticTopicBinder.MQTT_PASS_DEFAULT);
-        assertNotNull(result.getSocketFactory());
+        assertNull(result.getUserName());
+        assertNull(result.getPassword());
+        assertNull(result.getSocketFactory());
     }
 
     @Test

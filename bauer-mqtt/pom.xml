@@ -63,9 +63,9 @@
 
         <!-- Test -->
 		<dependency>
-			<groupId>io.codearte.jfairy</groupId>
+			<groupId>com.devskiller</groupId>
 			<artifactId>jfairy</artifactId>
-			<version>${version.jfairy}</version>
+			<version>0.6.5</version>
 			<scope>test</scope>
 		</dependency>
 

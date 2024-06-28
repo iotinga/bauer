@@ -7,7 +7,7 @@ import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 
 import static org.junit.Assert.*;
 

@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;

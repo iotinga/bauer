@@ -2,15 +2,14 @@ package it.netgrid.bauer.impl.impl;
 
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.MqttSubscription;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.devskiller.jfairy.Fairy;
+import io.codearte.jfairy.Fairy;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -23,7 +22,6 @@ import it.netgrid.bauer.impl.EventExample;
 import it.netgrid.bauer.impl.MqttMessageFactory;
 import it.netgrid.bauer.impl.MqttTopic;
  
-@TestInstance(Lifecycle.PER_CLASS)
 public class SimpleMqttMessageConsumerTest {
 
     private static final String MQTT_PATTERN_FULL = "a/b/c/d";
@@ -50,7 +48,7 @@ public class SimpleMqttMessageConsumerTest {
 
     private SimpleMqttMessageConsumer<EventExample> testee;
     
-    @BeforeEach
+    @Before
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         this.fairy = Fairy.create();
@@ -67,70 +65,70 @@ public class SimpleMqttMessageConsumerTest {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_FULL,MQTT_PATTERN_FULL, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_SHORT, null);
         verify(messageFactory, times(1)).getEvent(null, EventExample.class);
-        Assertions.assertTrue(result);
+        assertTrue(result);
     }
     @Test
     public void mqttPatternFullNoMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_FULL, MQTT_PATTERN_FULL, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_ALTERNATE, null);
         verify(messageFactory, never()).getEvent(any(), any());
-        Assertions.assertFalse(result);
+        assertFalse(result);
     }
     @Test
     public void mqttPatternSimpleMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_SIMPLE,MQTT_PATTERN_SIMPLE, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_FULL, null);
         verify(messageFactory, times(1)).getEvent(null, EventExample.class);
-        Assertions.assertTrue(result);
+        assertTrue(result);
     }
     @Test
     public void mqttPatternSimpleNoMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_SIMPLE,MQTT_PATTERN_SIMPLE, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_ALTERNATE, null);
         verify(messageFactory, never()).getEvent(any(), any());
-        Assertions.assertFalse(result);
+        assertFalse(result);
     }
     @Test
     public void mqttPatternInnerMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_INNER, MQTT_PATTERN_INNER, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_SHORT_ALTERNATE, null);
         verify(messageFactory, times(1)).getEvent(null, EventExample.class);
-        Assertions.assertTrue(result);
+        assertTrue(result);
     }
     @Test
     public void mqttPatternInnerNoMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_INNER,MQTT_PATTERN_INNER, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_ALTERNATE, null);
         verify(messageFactory, never()).getEvent(any(), any());
-        Assertions.assertFalse(result);
+        assertFalse(result);
     }
     @Test
     public void mqttPatternMultiMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_MULTI,MQTT_PATTERN_MULTI, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_SHORT, null);
         verify(messageFactory, times(1)).getEvent(null, EventExample.class);
-        Assertions.assertTrue(result);
+        assertTrue(result);
     }
     @Test
     public void mqttPatternMultiNoMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_MULTI,MQTT_PATTERN_MULTI, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_FULL, null);
         verify(messageFactory, never()).getEvent(any(), any());
-        Assertions.assertFalse(result);
+        assertFalse(result);
     }
     @Test
     public void mqttPatternMixedMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_MIXED,MQTT_PATTERN_MIXED, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_ALTERNATE, null);
         verify(messageFactory, times(1)).getEvent(null, EventExample.class);
-        Assertions.assertTrue(result);
+        assertTrue(result);
     }
     @Test
     public void mqttPatternMixedNoMatchTest() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, MQTT_PATTERN_MIXED,MQTT_PATTERN_MIXED, false, eventHandler);
         boolean result = this.testee.consume(MQTT_TOPIC_SHORT_ALTERNATE, null);
         verify(messageFactory, never()).getEvent(any(), any());
-        Assertions.assertFalse(result);
+        assertFalse(result);
     }
 
     @Test
@@ -138,20 +136,20 @@ public class SimpleMqttMessageConsumerTest {
         String fakeName = this.fairy.textProducer().latinWord();
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, fakeName, this.topic, false, eventHandler);
         MqttSubscription result = this.testee.getMqttSubscription();
-        Assertions.assertEquals(result.getTopic(), this.topic);
+        assertEquals(result.getTopic(), this.topic);
     }
 
     @Test
     public void getMqttSubscriptionsShared() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, this.sharedTopic, this.topic, true, eventHandler);
         MqttSubscription result = this.testee.getMqttSubscription();
-        Assertions.assertEquals(result.getTopic(), this.sharedTopic);
+        assertEquals(result.getTopic(), this.sharedTopic);
     }
 
     @Test
     public void getMqttSubscriptionsRetained() throws IOException {
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, this.retainedTopic, this.topic, false, eventHandler);
         MqttSubscription result = this.testee.getMqttSubscription();
-        Assertions.assertEquals(result.getTopic(), this.topic);
+        assertEquals(result.getTopic(), this.topic);
     }
 }

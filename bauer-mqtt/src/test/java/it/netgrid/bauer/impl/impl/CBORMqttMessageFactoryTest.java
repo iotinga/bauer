@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import com.devskiller.jfairy.Fairy;
-
+import io.codearte.jfairy.Fairy;
 import it.netgrid.bauer.impl.EventExample;
 
 public class CBORMqttMessageFactoryTest {
@@ -18,8 +17,8 @@ public class CBORMqttMessageFactoryTest {
     private static EventExample eventExample;
     private static Fairy fairy;
 
-    @BeforeEach
-    public static void setUp() {
+    @Before
+    public void setUp() {
         fairy = Fairy.create();
         testee = new CBORMqttMessageFactory();
         eventExample = new EventExample();
@@ -35,55 +34,55 @@ public class CBORMqttMessageFactoryTest {
     @Test
     public void getEventNullOnNullMessageTest() throws IOException {
         Object result = testee.getEvent(null, Object.class);
-        Assertions.assertEquals(result, null);
+        assertEquals(result, null);
     }
 
     @Test
     public void getEventNullOnEmptyMessageTest() throws IOException {
         MqttMessage message = new MqttMessage();
         Object result = testee.getEvent(message, Object.class);
-        Assertions.assertEquals(result, null);
+        assertEquals(result, null);
     }
 
     @Test
     public void getMqttMessageEmptyOnNullEventTest() throws IOException {
         MqttMessage result = testee.getMqttMessage(null, true);
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.getPayload().length, 0);
+        assertNotNull(result);
+        assertEquals(result.getPayload().length, 0);
     }
 
     @Test
     public void getMqttMessageRetainTest() throws IOException {
         MqttMessage result = testee.getMqttMessage(null, true);
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.isRetained(), true);
+        assertNotNull(result);
+        assertEquals(result.isRetained(), true);
     }
 
     @Test
     public void getMqttMessageNoRetainTest() throws IOException {
         MqttMessage result = testee.getMqttMessage(null, false);
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.isRetained(), false);
+        assertNotNull(result);
+        assertEquals(result.isRetained(), false);
     }
 
     @Test
     public void getMqttMessageNoRetainAsDefaultTest() throws IOException {
         MqttMessage result = testee.getMqttMessage(eventExample);
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.isRetained(), false);
+        assertNotNull(result);
+        assertEquals(result.isRetained(), false);
     }
 
     @Test
     public void getMqttMessagePayloadOnNotNullEventTest() throws IOException {
         MqttMessage result = testee.getMqttMessage(eventExample);
-        Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.getPayload().length > 0);
+        assertNotNull(result);
+        assertTrue(result.getPayload().length > 0);
     }
 
     @Test
     public void getEventPreserveStringsTest() throws IOException {
         MqttMessage message = testee.getMqttMessage(eventExample);
         EventExample event = testee.getEvent(message, EventExample.class);
-        Assertions.assertEquals(event.getField1(),eventExample.getField1());
+        assertEquals(event.getField1(),eventExample.getField1());
     }
 }

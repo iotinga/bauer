@@ -2,19 +2,16 @@ package it.netgrid.bauer.impl;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.devskiller.jfairy.Fairy;
+import io.codearte.jfairy.Fairy;
 
 import it.netgrid.bauer.Topic;
 
-@TestInstance(Lifecycle.PER_CLASS)
 public class MqttTopicFactoryTest {
     
     @Mock
@@ -26,7 +23,7 @@ public class MqttTopicFactoryTest {
 
     private Fairy fairy;
 
-    @BeforeEach
+    @Before
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         this.fairy = Fairy.create();
@@ -37,7 +34,7 @@ public class MqttTopicFactoryTest {
     public void getTopicBuildNoNull() {
         String topicName = this.fairy.textProducer().latinWord();
         Topic<?> result = this.testee.getTopic(topicName);
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
     }
 
     @Test
@@ -45,8 +42,8 @@ public class MqttTopicFactoryTest {
         String topicName = this.fairy.textProducer().latinWord();
         Topic<?> result1 = this.testee.getTopic(topicName);
         Topic<?> result2 = this.testee.getTopic(topicName);
-        Assertions.assertEquals(result1, result2);
-        Assertions.assertEquals(this.testee.activeTopics(), 1);
+        assertEquals(result1, result2);
+        assertEquals(this.testee.activeTopics(), 1);
     }
 
 }

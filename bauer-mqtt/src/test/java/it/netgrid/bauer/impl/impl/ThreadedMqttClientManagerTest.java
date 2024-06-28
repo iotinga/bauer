@@ -6,16 +6,16 @@ import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.MqttSubscription;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import io.codearte.jfairy.Fairy;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
-import com.devskiller.jfairy.Fairy;
+import static org.junit.Assert.*;
 
 import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.impl.EventExample;
@@ -47,7 +47,7 @@ public class ThreadedMqttClientManagerTest {
     private MqttMessage emptyMessage;
     private ThreadedMqttClientManager testee;
     
-    @BeforeEach
+    @Before
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         this.fairy = Fairy.create();
@@ -70,7 +70,7 @@ public class ThreadedMqttClientManagerTest {
     @Test
     public void addConsumerEnqueueSubscriptionTest() throws IOException, MqttException {
         this.testee.addConsumer(consumer);
-        Assertions.assertEquals(this.testee.pendingSubscriptions(), 1);
+        assertEquals(this.testee.pendingSubscriptions(), 1);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ThreadedMqttClientManagerTest {
         this.testee.addConsumer(consumer);
         this.testee.addConsumer(consumer);
         this.testee.addConsumer(consumer);
-        Assertions.assertEquals(this.testee.pendingSubscriptions(), 1);
+        assertEquals(this.testee.pendingSubscriptions(), 1);
     }
 
     @Test

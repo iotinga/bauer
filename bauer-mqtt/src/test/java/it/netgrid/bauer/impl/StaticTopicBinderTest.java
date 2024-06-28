@@ -3,9 +3,9 @@ package it.netgrid.bauer.impl;
 import java.util.Properties;
 
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import it.netgrid.bauer.impl.impl.CBORMqttMessageFactory;
 import it.netgrid.bauer.impl.impl.JSONMqttMessageFactory;
@@ -13,8 +13,8 @@ import it.netgrid.bauer.impl.impl.JSONMqttMessageFactory;
 public class StaticTopicBinderTest {
     private static Properties properties;
 
-    @BeforeEach
-    public static void setUp() {
+    @Before
+    public void setUp() {
         StaticTopicBinderTest.properties = new Properties();
         StaticTopicBinderTest.properties.setProperty(StaticTopicBinder.MQTT_CLIENT_ID_PROP,
                 StaticTopicBinder.MQTT_CLIENT_ID_DEFAULT);
@@ -41,40 +41,40 @@ public class StaticTopicBinderTest {
     @Test
     public void buildConnectionOptionsTest() {
         MqttConnectionOptions result = StaticTopicBinder.buildConnectionOptions(StaticTopicBinderTest.properties);
-        Assertions.assertEquals(result.isAutomaticReconnect(), true);
-        Assertions.assertEquals(result.getAutomaticReconnectMinDelay(),
+        assertEquals(result.isAutomaticReconnect(), true);
+        assertEquals(result.getAutomaticReconnectMinDelay(),
                 Integer.parseInt(StaticTopicBinder.MQTT_RECONN_MIN_DELAY_DEFAULT));
-        Assertions.assertEquals(result.getAutomaticReconnectMaxDelay(),
+        assertEquals(result.getAutomaticReconnectMaxDelay(),
                 Integer.parseInt(StaticTopicBinder.MQTT_RECONN_MAX_DELAY_DEFAULT));
-        Assertions.assertEquals(result.isCleanStart(),
+        assertEquals(result.isCleanStart(),
                 Boolean.parseBoolean(StaticTopicBinder.MQTT_CLEAN_START_DEFAULT));
-        Assertions.assertEquals(result.getConnectionTimeout(),
+        assertEquals(result.getConnectionTimeout(),
                 Integer.parseInt(StaticTopicBinder.MQTT_CONN_TIMEOUT_DEFAULT));
-        Assertions.assertEquals(result.getKeepAliveInterval(),
+        assertEquals(result.getKeepAliveInterval(),
                 Integer.parseInt(StaticTopicBinder.MQTT_KEEP_ALIVE_INTERVAL_DEFAULT));
-        Assertions.assertEquals(result.getUserName(), StaticTopicBinder.MQTT_USER_DEFAULT);
-        Assertions.assertEquals(new String(result.getPassword()), StaticTopicBinder.MQTT_PASS_DEFAULT);
-        Assertions.assertNotNull(result.getSocketFactory());
+        assertEquals(result.getUserName(), StaticTopicBinder.MQTT_USER_DEFAULT);
+        assertEquals(new String(result.getPassword()), StaticTopicBinder.MQTT_PASS_DEFAULT);
+        assertNotNull(result.getSocketFactory());
     }
 
     @Test
     public void getMessageFactoryCBORAsDefaultTest() {
         StaticTopicBinderTest.properties.remove(StaticTopicBinder.MQTT_MESSAGE_CONTENT_TYPE_PROP);
         MqttMessageFactory result = StaticTopicBinder.getMessageFactory(StaticTopicBinderTest.properties);
-        Assertions.assertInstanceOf(CBORMqttMessageFactory.class, result);
+        assertEquals(CBORMqttMessageFactory.class, result.getClass());
     }
 
     @Test
     public void getMessageFactoryCBOROnUnknownTest() {
         StaticTopicBinderTest.properties.setProperty(StaticTopicBinder.MQTT_MESSAGE_CONTENT_TYPE_PROP, "mq9ten0qem");
         MqttMessageFactory result = StaticTopicBinder.getMessageFactory(StaticTopicBinderTest.properties);
-        Assertions.assertInstanceOf(CBORMqttMessageFactory.class, result);
+        assertEquals(CBORMqttMessageFactory.class, result.getClass());
     }
 
     @Test
     public void getMessageFactoryJSONAsRequiredTest() {
         StaticTopicBinderTest.properties.setProperty(StaticTopicBinder.MQTT_MESSAGE_CONTENT_TYPE_PROP, JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE);
         MqttMessageFactory result = StaticTopicBinder.getMessageFactory(StaticTopicBinderTest.properties);
-        Assertions.assertInstanceOf(JSONMqttMessageFactory.class, result);
+        assertEquals(JSONMqttMessageFactory.class, result.getClass());
     }
 }

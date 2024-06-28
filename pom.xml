@@ -47,6 +47,7 @@
 	<modules>
 		<module>bauer-api</module>
 		<module>bauer-ffmq</module>
+		<module>bauer-mqtt</module>
 		<module>bauer-nop</module>
 	</modules>
 

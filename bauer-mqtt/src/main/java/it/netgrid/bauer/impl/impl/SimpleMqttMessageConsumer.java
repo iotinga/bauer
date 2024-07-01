@@ -15,15 +15,18 @@ import it.netgrid.bauer.impl.MqttTopic;
 
 public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
 
-    private class Nullable<E>{
-        public final E event;
-        Nullable(E event) {
-            this.event = event;
+    private class Nullable {
+        public final E payload;
+        public final String topic;
+
+        Nullable(String topic, E payload) {
+            this.payload = payload;
+            this.topic = topic;
         }
     }
 
     private static final Logger log = LoggerFactory.getLogger(SimpleMqttMessageConsumer.class);
-    private final LinkedBlockingQueue<Nullable<E>> incomingEvents;
+    private final LinkedBlockingQueue<Nullable> incomingEvents;
     private final EventHandler<E> handler;
     private final String mqttPattern;
     private final boolean sharedSubscription;
@@ -31,8 +34,8 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
     private final String[] mqttPatternParts;
     private final String name;
 
-
-    public SimpleMqttMessageConsumer(MqttMessageFactory factory, String name, String mqttPattern, boolean sharedSubscription, EventHandler<E> handler) {
+    public SimpleMqttMessageConsumer(MqttMessageFactory factory, String name, String mqttPattern,
+            boolean sharedSubscription, EventHandler<E> handler) {
         this.name = name;
         this.mqttPattern = mqttPattern;
         this.sharedSubscription = sharedSubscription;
@@ -46,8 +49,8 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                E event = incomingEvents.take().event; 
-                this.handler.handle(event);
+                Nullable event = incomingEvents.take();
+                this.handler.handle(event.topic, event.payload);
             }
         } catch (Exception e) {
             log.warn(String.format("%s handler: %s", mqttPattern, e.getMessage()));
@@ -56,10 +59,10 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
 
     @Override
     public boolean consume(String topic, MqttMessage message) throws IOException {
-        if(this.matches(topic)) {
+        if (this.matches(topic)) {
             try {
                 E event = this.factory.getEvent(message, this.handler.getEventClass());
-                this.incomingEvents.put(new Nullable<E>(event));
+                this.incomingEvents.put(new Nullable(topic, event));
             } catch (Exception e) {
                 throw new IOException(e);
             }
@@ -103,12 +106,13 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
 
     @Override
     public String toString() {
-        return String.format("%s->%s[%s]", this.mqttPattern, this.handler.getName(),this.handler.getEventClass().getSimpleName() );
+        return String.format("%s->%s[%s]", this.mqttPattern, this.handler.getName(),
+                this.handler.getEventClass().getSimpleName());
     }
 
     @Override
     public MqttSubscription getMqttSubscription() {
-        String topic = this.sharedSubscription ? this.name : this.mqttPattern; 
+        String topic = this.sharedSubscription ? this.name : this.mqttPattern;
         return new MqttSubscription(topic);
     }
 }

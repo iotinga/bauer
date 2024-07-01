@@ -16,16 +16,16 @@ import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.Topic;
 
 public class FfmqTopic<E> implements Topic<E> {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(FfmqTopic.class);
-	
+
 	private final String name;
 	private final FfmqTopicFactory factory;
-	
+
 	private final Map<String, TopicSubscriber> subscribers;
 	private MessageProducer producer;
 	private TopicSession producerSession;
-	
+
 	public FfmqTopic(String name, FfmqTopicFactory factory) {
 		this.name = name;
 		this.factory = factory;
@@ -39,14 +39,14 @@ public class FfmqTopic<E> implements Topic<E> {
 
 	@Override
 	public void addHandler(EventHandler<E> handler) {
-		if( ! subscribers.containsKey(handler.getName())) {
+		if (!subscribers.containsKey(handler.getName())) {
 			TopicSubscriber subscriber = this.getSubscriber(handler.getName());
-			if(subscriber == null) {
+			if (subscriber == null) {
 				log.error(String.format("%s: %s Unable to add handler", this.name, handler.getName()));
 				return;
 			}
 			try {
-				subscriber.setMessageListener(this.factory.<E>buildMessageListener(handler));
+				subscriber.setMessageListener(this.factory.<E>buildMessageListener(this.name, handler));
 			} catch (JMSException e) {
 				log.error(String.format("%s: %s Unable to add handler", this.name, handler.getName()));
 			}
@@ -57,15 +57,17 @@ public class FfmqTopic<E> implements Topic<E> {
 
 	@Override
 	public void post(E event) {
-		if(event == null) return;
-		
+		if (event == null)
+			return;
+
 		TextMessage message = this.factory.buildMessage(this.getProducerSession(), event);
-		
-		if(message == null) return;
-		
+
+		if (message == null)
+			return;
+
 		this.post(message);
 	}
-	
+
 	private void post(TextMessage message) {
 		try {
 			this.getProducer().send(message);
@@ -80,29 +82,29 @@ public class FfmqTopic<E> implements Topic<E> {
 	}
 
 	private TopicSubscriber getSubscriber(String subscriberName) {
-		if( ! this.subscribers.containsKey(subscriberName)) {
+		if (!this.subscribers.containsKey(subscriberName)) {
 			TopicSession session = this.factory.buildTopicConsumerSession(this.name, subscriberName);
 			TopicSubscriber subscriber = this.factory.getTopicSubscriber(session, this.name, subscriberName);
 			this.subscribers.put(subscriberName, subscriber);
 			return subscriber;
 		}
-		
+
 		return this.subscribers.get(subscriberName);
 	}
-	
+
 	private TopicSession getProducerSession() {
-		if(this.producerSession == null) {
+		if (this.producerSession == null) {
 			this.producerSession = this.factory.buildTopicProducerSession(this.name);
 		}
-		
+
 		return this.producerSession;
 	}
-	
+
 	private MessageProducer getProducer() {
-		if(this.producer == null) {
+		if (this.producer == null) {
 			this.producer = this.factory.getMessageProducer(this.getProducerSession(), this.name);
 		}
-		
+
 		return this.producer;
 	}
 }

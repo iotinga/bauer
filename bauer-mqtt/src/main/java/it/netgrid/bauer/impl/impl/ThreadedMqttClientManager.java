@@ -14,10 +14,12 @@ import java.util.function.Consumer;
 
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttClient;
+import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.client.MqttDisconnectResponse;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.MqttPersistenceException;
+import org.eclipse.paho.mqttv5.common.MqttSecurityException;
 import org.eclipse.paho.mqttv5.common.MqttSubscription;
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 import org.slf4j.Logger;
@@ -51,6 +53,8 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
 
     private Future<?> subscribeTask;
 
+    private Future<?> connectTask;
+
     public ThreadedMqttClientManager(MqttClient client) {
         this.client = client;
         this.activeSubscriptions = new ArrayList<>();
@@ -58,8 +62,8 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
         this.executor = Executors.newThreadPerTaskExecutor(ThreadedMqttClientManager.THREAD_FACTORY);
     }
 
-    public void publish(String topic, MqttMessage message) throws IOException  {
-        try{
+    public void publish(String topic, MqttMessage message) throws IOException {
+        try {
             this.client.publish(topic, message);
         } catch (MqttPersistenceException e) {
             log.warn("Unable to persist: %s - %s", topic, message.toDebugString());
@@ -72,7 +76,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
 
     @Override
     public void addConsumer(MqttMessageConsumer consumer) throws IOException {
-        if(this.consumers.containsKey(consumer))
+        if (this.consumers.containsKey(consumer))
             return;
         this.consumers.put(consumer, null);
         Future<?> future = this.executor.submit(consumer);
@@ -145,13 +149,14 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
     @Override
     public void run() {
         boolean restored = false;
-        while(!Thread.currentThread().isInterrupted() && this.activeSubscriptions.size() > 0 && ! restored) {
+        while (!Thread.currentThread().isInterrupted() && this.activeSubscriptions.size() > 0 && !restored) {
             try {
                 int activeCount = this.activeSubscriptions.size();
                 MqttSubscription[] subscriptions = new MqttSubscription[activeCount];
-                for(int i=0; i< activeCount; i++) {
+                for (int i = 0; i < activeCount; i++) {
                     subscriptions[i] = this.activeSubscriptions.get(i);
-                };
+                }
+                ;
                 this.client.subscribe(subscriptions);
                 restored = true;
                 break;
@@ -184,7 +189,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
         } catch (MqttException e) {
             log.warn(String.format("Unable to subscribe to %s: %s", subscription.getTopic(), e.getMessage()));
         } finally {
-            if(subscription != null) {
+            if (subscription != null) {
                 this.pendingSubscriptions.add(subscription);
             }
         }
@@ -192,6 +197,39 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
 
     public int pendingSubscriptions() {
         return this.pendingSubscriptions.size();
+    }
+
+    @Override
+    public boolean connectCompleted() {
+        return this.connectTask.isDone();
+    }
+
+    @Override
+    public void connect(final MqttConnectionOptions options) throws IOException {
+        this.connectTask = this.executor.submit(new Runnable() {
+
+            @Override
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        client.connect(options);
+                        break;
+                    } catch (MqttSecurityException e) {
+                        log.error("Security error: %s", e.getMessage());
+                    } catch (MqttException e) {
+                        log.warn(String.format("Unable to connect. Retry in seconds..."));
+                    }
+                    try {
+                        long sleep = (long) (options.getAutomaticReconnectMinDelay() * 1000
+                                + (Math.random() * options.getAutomaticReconnectMaxDelay() * 1000));
+                        Thread.sleep(sleep);
+                    } catch (InterruptedException e) {
+                        log.info("Shutting down...");
+                    }
+                }
+            }
+
+        });
     }
 
 }

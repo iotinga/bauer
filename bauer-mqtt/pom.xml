@@ -59,6 +59,13 @@
             <version>${version.jackson-cbor}</version>
         </dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+
         <!-- Test -->
 		<dependency>
 			<groupId>com.devskiller</groupId>

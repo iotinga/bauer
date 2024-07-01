@@ -1,5 +1,6 @@
 package it.netgrid.bauer.impl;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -7,7 +8,6 @@ import javax.net.ssl.SSLSocketFactory;
 import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.common.MqttException;
-import org.eclipse.paho.mqttv5.common.MqttSecurityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,11 +86,11 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
             // Open MQTT connection
             MqttConnectionOptions options = StaticTopicBinder.buildConnectionOptions(p);
-            client.connect(options);
-        } catch (MqttSecurityException e) {
-            log.error("Security error: %s", e.getMessage());
+            mqttClientManager.connect(options);
         } catch (MqttException e) {
             log.error("Unable to init MQTT Client: %s", e.getMessage());
+        } catch (IOException e) {
+            log.error("Unable to connect: %s", e.getMessage());
         }
     }
 

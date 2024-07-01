@@ -70,7 +70,7 @@ public class MqttTopic<E> implements Topic<E> {
             message = this.factory.getMqttMessage(event, retains);
             this.manager.publish(this.mqttPattern, message);
         } catch (IOException e) {
-            log.error("Unable to post %s %s", this.mqttPattern, e);
+            log.error(String.format("Unable to post %s %s", this.mqttPattern, e));
         }
     }
 

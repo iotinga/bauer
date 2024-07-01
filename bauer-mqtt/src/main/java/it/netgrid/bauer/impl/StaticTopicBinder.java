@@ -88,9 +88,9 @@ public class StaticTopicBinder implements TopicFactoyBinder {
             MqttConnectionOptions options = StaticTopicBinder.buildConnectionOptions(p);
             mqttClientManager.connect(options);
         } catch (MqttException e) {
-            log.error("Unable to init MQTT Client: %s", e.getMessage());
+            log.error(String.format("Unable to init MQTT Client: %s", e.getMessage()));
         } catch (IOException e) {
-            log.error("Unable to connect: %s", e.getMessage());
+            log.error(String.format("Unable to connect: %s", e.getMessage()));
         }
     }
 

@@ -32,7 +32,7 @@ public class MqttTopicFactory implements ITopicFactory {
                     this.isRetainedTopic(name));
             topics.put(name, topic);
         } else {
-            log.debug("Topic %s already exists", name);
+            log.debug(String.format("Topic %s already exists", name));
         }
 
         return (Topic<E>) topics.get(name);

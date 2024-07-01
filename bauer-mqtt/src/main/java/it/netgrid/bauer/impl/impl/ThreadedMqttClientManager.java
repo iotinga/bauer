@@ -66,10 +66,10 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
         try {
             this.client.publish(topic, message);
         } catch (MqttPersistenceException e) {
-            log.warn("Unable to persist: %s - %s", topic, message.toDebugString());
+            log.warn(String.format("Unable to persist: %s - %s", topic, message.toDebugString()));
             throw new IOException(e);
         } catch (MqttException e) {
-            log.info("Unable to publish: %s - %s", topic, message.toDebugString());
+            log.warn(String.format("Unable to publish: %s - %s", topic, message.toDebugString()));
             throw new IOException(e);
         }
     }
@@ -84,7 +84,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
         try {
             this.pendingSubscriptions.put(consumer.getMqttSubscription());
         } catch (InterruptedException e) {
-            log.error("Subscription failed %s", consumer.toString());
+            log.error(String.format("Subscription failed %s", consumer.toString()));
         }
     }
 
@@ -94,12 +94,12 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
             this.subscribeTask.cancel(true);
             this.subscribeTask = null;
         }
-        log.warn("MQTT-Connection: LOST", disconnectResponse);
+        log.warn(String.format("MQTT-Connection: LOST", disconnectResponse));
     }
 
     @Override
     public void mqttErrorOccurred(MqttException exception) {
-        log.error("MQTT-Error: %s", exception.toString(), exception);
+        log.error(String.format("MQTT-Error: %s", exception.toString(), exception));
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
                 try {
                     consumer.consume(topic, message);
                 } catch (IOException e) {
-                    log.error("Unable to consume from %s by %s", topic, consumer);
+                    log.error(String.format("Unable to consume from %s by %s", topic, consumer));
                 }
             }
 
@@ -120,12 +120,12 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
 
     @Override
     public void deliveryComplete(IMqttToken token) {
-        log.debug("MQTT-Delivered: %s", token);
+        log.debug(String.format("MQTT-Delivered: %s", token));
     }
 
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        log.info("MQTT-Connection: %s to %s", reconnect ? "RECONNECTED" : "CONNECTED", serverURI);
+        log.info(String.format("MQTT-Connection: %s to %s", reconnect ? "RECONNECTED" : "CONNECTED", serverURI));
         this.subscribeTask = this.executor.submit(this);
     }
 
@@ -143,7 +143,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
                 message = "RE-AUTH";
                 break;
         }
-        log.info("MQTT-Connection: %s", message);
+        log.info(String.format("MQTT-Connection: %s", message));
     }
 
     @Override
@@ -167,7 +167,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
                 long sleep = (long) (1000 + (Math.random() * 4000));
                 Thread.sleep(sleep);
             } catch (InterruptedException e) {
-                log.info("Shutting down...");
+                log.info(String.format("Shutting down..."));
             }
         }
         while (!Thread.currentThread().isInterrupted()) {
@@ -215,7 +215,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
                         client.connect(options);
                         break;
                     } catch (MqttSecurityException e) {
-                        log.error("Security error: %s", e.getMessage());
+                        log.error(String.format("Security error: %s", e.getMessage()));
                     } catch (MqttException e) {
                         log.warn(String.format("Unable to connect. Retry in seconds..."));
                     }
@@ -224,7 +224,7 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
                                 + (Math.random() * options.getAutomaticReconnectMaxDelay() * 1000));
                         Thread.sleep(sleep);
                     } catch (InterruptedException e) {
-                        log.info("Shutting down...");
+                        log.info(String.format("Shutting down..."));
                     }
                 }
             }

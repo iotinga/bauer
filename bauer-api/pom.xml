@@ -3,7 +3,7 @@
     <parent>
         <groupId>it.netgrid</groupId>
         <artifactId>bauer</artifactId>
-        <version>0.0.16</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>bauer-api</artifactId>
     <name>Bauer API</name>

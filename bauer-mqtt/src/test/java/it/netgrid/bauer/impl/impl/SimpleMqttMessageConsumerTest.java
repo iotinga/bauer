@@ -2,15 +2,14 @@ package it.netgrid.bauer.impl.impl;
 
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.MqttSubscription;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.devskiller.jfairy.Fairy;
+import com.github.javafaker.Faker;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.*;
@@ -40,7 +39,7 @@ public class SimpleMqttMessageConsumerTest {
     @Mock
     private EventHandler<EventExample> eventHandler;
 
-    private Fairy fairy;
+    private Faker faker;
     private String topic;
     private String sharedTopic;
     private String retainedTopic;
@@ -48,13 +47,13 @@ public class SimpleMqttMessageConsumerTest {
 
     private SimpleMqttMessageConsumer<EventExample> testee;
     
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
+        faker = new Faker();
+        topic = this.faker.lorem().word();
         MockitoAnnotations.openMocks(this);
-        this.fairy = Fairy.create();
-        this.topic = this.fairy.textProducer().latinWord();
-        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.fairy.textProducer().latinWord(), MqttTopic.PATH_SEPARATOR, this.topic);
-        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.fairy.textProducer().latinWord(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
         emptyMessage = new MqttMessage();
         when(eventHandler.getEventClass()).thenReturn(EventExample.class);
         when(messageFactory.getMqttMessage(any(), anyBoolean())).thenReturn(emptyMessage);
@@ -133,7 +132,7 @@ public class SimpleMqttMessageConsumerTest {
 
     @Test
     public void getMqttSubscriptionsSimple() throws IOException {
-        String fakeName = this.fairy.textProducer().latinWord();
+        String fakeName = this.faker.lorem().word();
         this.testee = new SimpleMqttMessageConsumer<>(messageFactory, fakeName, this.topic, false, eventHandler);
         MqttSubscription result = this.testee.getMqttSubscription();
         assertEquals(result.getTopic(), this.topic);

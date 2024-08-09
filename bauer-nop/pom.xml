@@ -19,7 +19,7 @@
 	</licenses>
 
 	<properties>
-		<version.java>11</version.java>
+		<version.java>21</version.java>
 		<version.slf4j>2.0.9</version.slf4j>
 	</properties>
 

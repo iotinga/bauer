@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
 
 import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.ITopicFactory;
@@ -40,19 +41,18 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 		gson = gsonBuilder.create();
 	}
 
-	public static final String PROVIDER_URL_PROP = "ffmqProvider";
-	public static final String MESSAGE_HANDLER_RETRY_RATE_PROP = "messageHandlerRetry";
-	public static final String MESSAGE_HANDLER_MAX_RETRY_PROP = "messageHandlerMaxRetry";
-
-	public static final String DEFAULT_PROVIDER_URL = "tcp://localhost:10002";
-	public static final String DEFAULT_MESSAGE_HANDLER_RETRY_RATE = "2000";
-	public static final String DEFAULT_MESSAGE_HANDLER_MAX_RETRY = "10";
-
-	private static final String TOPIC_USERNAME_NAME_FORMAT = "topic.%s.username";
-	private static final String TOPIC_PASSWORD_NAME_FORMAT = "topic.%s.password";
-
+	private final FfmqConfigProvider config;
 	private Context context;
 	private TopicConnectionFactory connFactory;
+
+	public FfmqTopicFactory() {
+		this.config = new FfmqConfigFromPropertiesProvider();
+	}
+
+	@Inject
+	public FfmqTopicFactory(FfmqConfigProvider configProvider) {
+		this.config = configProvider;
+	}
 
 	@Override
 	public <E> Topic<E> getTopic(String name) {
@@ -64,8 +64,7 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 			// Create and initialize a JNDI context
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, FFMQConstants.JNDI_CONTEXT_FACTORY);
-			env.put(Context.PROVIDER_URL,
-					TopicFactory.getProperties().getProperty(FfmqTopicFactory.PROVIDER_URL_PROP, DEFAULT_PROVIDER_URL));
+			env.put(Context.PROVIDER_URL, this.config.get().providerUrl());
 
 			try {
 				context = new InitialContext(env);
@@ -178,13 +177,11 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 	public int getHandlerMaxRetry() {
-		return Integer.parseInt(TopicFactory.getProperties().getProperty(MESSAGE_HANDLER_MAX_RETRY_PROP,
-				DEFAULT_MESSAGE_HANDLER_MAX_RETRY));
+		return this.config.get().messageHandlerMaxRetry();
 	}
 
 	public int getHandlerRetryRate() {
-		return Integer.parseInt(TopicFactory.getProperties().getProperty(MESSAGE_HANDLER_RETRY_RATE_PROP,
-				DEFAULT_MESSAGE_HANDLER_RETRY_RATE));
+		return this.config.get().messageHandlerRetryRate();
 	}
 
 	private String getUsername(String topicName) {
@@ -196,11 +193,11 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 	private String getUsernamePropertyName(String topicName) {
-		return String.format(TOPIC_USERNAME_NAME_FORMAT, topicName);
+		return String.format(this.config.get().topicUsernameFormat(), topicName);
 	}
 
 	private String getPasswordPropertyName(String topicName) {
-		return String.format(TOPIC_PASSWORD_NAME_FORMAT, topicName);
+		return String.format(this.config.get().topicPasswordFormat(), topicName);
 	}
 
 	public <E> E getEvent(TextMessage message, Class<E> eventClass) throws JMSException {
@@ -238,7 +235,7 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 	public <E> MessageListener buildMessageListener(final String topic, final EventHandler<E> handler) {
-		return new FFmqMessageListener<E>(this, topic, handler);
+		return new FfmqMessageListener<E>(this, topic, handler);
 	}
 
 	@Override

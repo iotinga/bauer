@@ -20,7 +20,7 @@
 	<description>A Bauer binder for FFMQ</description>
 
 	<properties>
-		<version.java>11</version.java>
+		<version.java>21</version.java>
 		<version.junit>4.12</version.junit>
 		<version.jfairy>0.4.3</version.jfairy>
 		<version.slf4j>2.0.9</version.slf4j>

@@ -12,14 +12,16 @@
 	<description>A Bauer binder for MQTT supporting also $share and $retain topics. It is based on the PAHO MQTT library.</description>
 
     <properties>
-		<version.java>11</version.java>
+		<version.java>21</version.java>
 		<version.slf4j>2.0.9</version.slf4j>
         <version.paho>1.2.5</version.paho>
         <version.jackson-cbor>2.17.1</version.jackson-cbor>
 		<version.junit>4.12</version.junit>
-		<version.jfairy>0.6.5</version.jfairy>
         <version.mockito>5.12.0</version.mockito>
-        <version.javaee-api>8.0.1</version.javaee-api>
+        <version.javaee-api>8.0.1</version.javaee-api>        
+		<version.junit>5.9.2</version.junit>
+        <version.mockito>5.12.0</version.mockito>
+        <version.javafaker>1.0.2</version.javafaker>
     </properties>
 
     <repositories>
@@ -67,31 +69,36 @@
 		</dependency>
 
         <!-- Test -->
-		<dependency>
-			<groupId>com.devskiller</groupId>
-			<artifactId>jfairy</artifactId>
-			<version>${version.jfairy}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${version.javafaker}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${version.mockito}</version>
+            <scope>test</scope>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
-		<dependency>
-			<groupId>jakarta.xml.bind</groupId>
-			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>4.0.1</version>
-		</dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${version.mockito}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 	<build>

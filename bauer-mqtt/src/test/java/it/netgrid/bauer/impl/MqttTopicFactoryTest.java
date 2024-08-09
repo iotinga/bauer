@@ -1,14 +1,15 @@
 package it.netgrid.bauer.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.devskiller.jfairy.Fairy;
+import com.github.javafaker.Faker;
 
 import it.netgrid.bauer.Topic;
 
@@ -21,25 +22,25 @@ public class MqttTopicFactoryTest {
 
     private MqttTopicFactory testee;
 
-    private Fairy fairy;
+    private Faker faker;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
-        this.fairy = Fairy.create();
+        this.faker = new Faker();
         this.testee = new MqttTopicFactory(manager, messageFactory);
     }
 
     @Test
     public void getTopicBuildNoNull() {
-        String topicName = this.fairy.textProducer().latinWord();
+        String topicName = this.faker.lorem().word();
         Topic<?> result = this.testee.getTopic(topicName);
         assertNotNull(result);
     }
 
     @Test
     public void getTopicBuildOnlyOneTopicByName() {
-        String topicName = this.fairy.textProducer().latinWord();
+        String topicName = this.faker.lorem().word();
         Topic<?> result1 = this.testee.getTopic(topicName);
         Topic<?> result2 = this.testee.getTopic(topicName);
         assertEquals(result1, result2);

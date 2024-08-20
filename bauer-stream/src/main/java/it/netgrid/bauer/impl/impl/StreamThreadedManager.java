@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
@@ -43,49 +44,6 @@ public class StreamThreadedManager implements StreamManager {
         this.streams = provider;
     }
 
-    @Override
-    public synchronized void addMessageConsumer(StreamMessageConsumer consumer) {
-        this.consumers.add(consumer);
-
-        if (this.consumers.size() == 1) {
-            this.start();
-        }
-    }
-
-    @Override
-    public synchronized void postMessage(JsonNode message) {
-        if (message != null)
-            this.executor.submit(() -> {
-                byte[] payload = message.toString().getBytes();
-                try {
-                    this.streams.output().write(payload);
-                    this.streams.output().flush();
-                } catch (IOException e) {
-                    log.warn("unable to post: %s");
-                }
-            });
-    }
-
-    public synchronized void start() {
-        if (this.parser != null || !this.parser.isDone()) {
-            return;
-        }
-
-        this.parser = this.executor.submit(() -> this.runCborMessageFetch());
-    }
-
-    public synchronized void trigger(JsonNode message) {
-        if (message != null) {
-            for (StreamMessageConsumer consumer : this.consumers) {
-                consumer.consume(message);
-            }
-            if (this.config.isMessageBubblingEnabled()) {
-                this.postMessage(message);
-                log.debug(String.format("bubbling"));
-            }
-        }
-    }
-
     public Integer runCborMessageFetch() {
         try {
             CBORParser parser = this.cf.createParser(this.streams.input());
@@ -108,5 +66,57 @@ public class StreamThreadedManager implements StreamManager {
         }
         return 0;
     }
+
+    @Override
+    public synchronized void addMessageConsumer(StreamMessageConsumer consumer) {
+        
+        this.consumers.add(consumer);
+
+        if (this.consumers.size() == 1) {
+            this.start();
+        }
+    }
+
+    public void unsafeAddMessageConsumer(StreamMessageConsumer consumer) {
+        this.consumers.add(consumer);
+    }
+
+    @Override
+    public void postMessage(JsonNode message) {
+        if (message != null)
+            this.executor.submit(() -> this.unsafePostMessage(message));
+    }
+
+    public synchronized void unsafePostMessage(JsonNode message) {
+        try {
+            byte[] payload = this.om.writeValueAsBytes(message);
+            this.streams.output().write(payload);
+            this.streams.output().flush();
+        } catch (JsonProcessingException e) {
+            log.warn(String.format("unable to process: %s", e.getMessage()));
+        } catch (IOException e) {
+            log.warn(String.format("unable to post: %s", e.getMessage()));
+        }
+    }
+
+    public synchronized void start() {
+        if (this.parser == null || this.parser.isDone()) {
+            this.parser = this.executor.submit(() -> this.runCborMessageFetch());
+        }
+    }
+
+    public synchronized void trigger(JsonNode message) {
+        if (message != null) {
+            for (StreamMessageConsumer consumer : this.consumers) {
+                consumer.consume(message);
+            }
+            if (this.config.isMessageBubblingEnabled()) {
+                this.postMessage(message);
+                log.debug(String.format("bubbling"));
+            }
+        }
+    }
+
+
 
 }

@@ -87,6 +87,8 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
     }
 
     public boolean match(String topic) {
+        if(topic == null) return false;
+        
         String[] topicLevels = topic.split(TOPIC_GLUE);
 
         int index = 0;

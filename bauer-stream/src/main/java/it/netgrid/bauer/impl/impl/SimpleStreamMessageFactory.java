@@ -56,7 +56,7 @@ public class SimpleStreamMessageFactory implements StreamMessageFactory {
     @Override
     public <E> StreamEvent<E> buildEvent(JsonNode message, Class<E> eventClass) throws IOException {
         StreamEvent<JsonNode> rawEvent = this.buildEvent(message);
-        E payload = this.om.convertValue(rawEvent.getClass(), eventClass);
+        E payload = this.om.convertValue(rawEvent.payload(), eventClass);
         return new StreamEvent<E>(rawEvent.topic(), payload);
     }
 

@@ -3,7 +3,7 @@
     <parent>
         <groupId>it.netgrid</groupId>
         <artifactId>bauer</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
     <artifactId>bauer-api</artifactId>
     <name>Bauer API</name>
@@ -19,7 +19,7 @@
     </licenses>
 
     <properties>
-        <version.java>11</version.java>
+        <version.java>21</version.java>
         <version.slf4j>2.0.9</version.slf4j>
     </properties>
 
@@ -36,6 +36,14 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <version>3.1.0</version>
             <scope>compile</scope>
+        </dependency>
+
+
+        <!-- Dependency Injection -->
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>7.0.0</version>
         </dependency>
     </dependencies>
 

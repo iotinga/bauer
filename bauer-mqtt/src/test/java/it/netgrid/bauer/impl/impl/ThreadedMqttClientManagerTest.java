@@ -6,16 +6,16 @@ import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.MqttSubscription;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.devskiller.jfairy.Fairy;
+import com.github.javafaker.Faker;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.impl.EventExample;
@@ -37,7 +37,7 @@ public class ThreadedMqttClientManagerTest {
     @Mock
     private MqttClient client;
 
-    private Fairy fairy;
+    private Faker faker;
     private String topic;
     private String sharedTopic;
     private String retainedTopic;
@@ -47,13 +47,13 @@ public class ThreadedMqttClientManagerTest {
     private MqttMessage emptyMessage;
     private ThreadedMqttClientManager testee;
     
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
-        this.fairy = Fairy.create();
-        this.topic = this.fairy.textProducer().latinWord();
-        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.fairy.textProducer().latinWord(), MqttTopic.PATH_SEPARATOR, this.topic);
-        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.fairy.textProducer().latinWord(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.faker = new Faker();
+        this.topic = this.faker.lorem().word();
+        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
         emptyMessage = new MqttMessage();
         this.testee = new ThreadedMqttClientManager(client);
         this.subscription = new MqttSubscription(this.topic);

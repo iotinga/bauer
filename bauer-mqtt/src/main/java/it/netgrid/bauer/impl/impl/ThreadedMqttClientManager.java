@@ -25,6 +25,8 @@ import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 import it.netgrid.bauer.impl.MqttClientManager;
 import it.netgrid.bauer.impl.MqttMessageConsumer;
 
@@ -55,8 +57,10 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
 
     private Future<?> connectTask;
 
+    @Inject
     public ThreadedMqttClientManager(MqttClient client) {
         this.client = client;
+        this.client.setCallback(this);
         this.activeSubscriptions = new ArrayList<>();
         this.pendingSubscriptions = new LinkedBlockingQueue<>();
         this.executor = Executors.newThreadPerTaskExecutor(ThreadedMqttClientManager.THREAD_FACTORY);

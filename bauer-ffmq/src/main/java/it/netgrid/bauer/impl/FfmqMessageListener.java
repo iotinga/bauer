@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import it.netgrid.bauer.EventHandler;
 
-public class FFmqMessageListener<E> implements MessageListener {
+public class FfmqMessageListener<E> implements MessageListener {
 
-	private static final Logger log = LoggerFactory.getLogger(FFmqMessageListener.class);
+	private static final Logger log = LoggerFactory.getLogger(FfmqMessageListener.class);
 	private final EventHandler<E> handler;
 	private final FfmqTopicFactory factory;
 	private final String topic;
 
-	public FFmqMessageListener(FfmqTopicFactory factory, String topic, EventHandler<E> handler) {
+	public FfmqMessageListener(FfmqTopicFactory factory, String topic, EventHandler<E> handler) {
 		this.factory = factory;
 		this.handler = handler;
 		this.topic = topic;

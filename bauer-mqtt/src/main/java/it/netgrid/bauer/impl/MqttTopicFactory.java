@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 import it.netgrid.bauer.ITopicFactory;
 import it.netgrid.bauer.Topic;
 
@@ -18,6 +20,7 @@ public class MqttTopicFactory implements ITopicFactory {
 
     private final Map<String, MqttTopic<?>> topics;
 
+    @Inject
     public MqttTopicFactory(MqttClientManager manager, MqttMessageFactory messageFactory) {
         this.topics = new HashMap<>();
         this.messageFactory = messageFactory;

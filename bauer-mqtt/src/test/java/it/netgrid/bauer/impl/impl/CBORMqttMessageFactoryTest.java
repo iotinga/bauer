@@ -1,31 +1,33 @@
 package it.netgrid.bauer.impl.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.devskiller.jfairy.Fairy;
+import com.github.javafaker.Faker;
+
 import it.netgrid.bauer.impl.EventExample;
 
 public class CBORMqttMessageFactoryTest {
 
     private static CBORMqttMessageFactory testee;
     private static EventExample eventExample;
-    private static Fairy fairy;
+    private Faker faker;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        fairy = Fairy.create();
         testee = new CBORMqttMessageFactory();
+        faker = new Faker();
         eventExample = new EventExample();
-        eventExample.setField1(fairy.textProducer().latinSentence());
-        eventExample.setField2(fairy.baseProducer().randomInt(Integer.MAX_VALUE));
-        eventExample.setField3((float) fairy.baseProducer().randomBetween(0.0f, 100000.0f));
-        int[] field4 = new int[fairy.baseProducer().randomInt(20)];
+        eventExample.setField1(faker.lorem().sentence());
+        eventExample.setField2(faker.random().nextInt(Integer.MAX_VALUE));
+        eventExample.setField3((float) faker.random().nextInt(0, 100000) / 100);
+        int[] field4 = new int[faker.random().nextInt(20)];
         eventExample.setField4(field4);
         eventExample.setField5(new ArrayList<>());
         eventExample.setField6(null);

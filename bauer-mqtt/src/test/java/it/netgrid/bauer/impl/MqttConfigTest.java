@@ -38,7 +38,7 @@ public class MqttConfigTest {
         assertEquals(result.getConnectionTimeout(), config.connectionTimeout());
         assertEquals(result.getKeepAliveInterval(), config.keepAliveInterval());
         assertEquals(result.getUserName(), config.user());
-        assertEquals(result.getPassword(), config.password());
+        assertEquals(new String(result.getPassword()), config.password());
         assertNull(result.getSocketFactory());
     }
 

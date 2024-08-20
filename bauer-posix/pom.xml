@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>it.netgrid</groupId>
-		<artifactId>bauer</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+          <groupId>it.netgrid</groupId>
+          <artifactId>bauer</artifactId>
+          <version>1.0.0</version>
+    </parent>
 
-    <artifactId>bauer-mqtt</artifactId>
-	<name>Bauer MQTT binder</name>
-	<description>A Bauer binder for MQTT supporting also $share and $retain topics. It is based on the PAHO MQTT library.</description>
+    <artifactId>bauer-posix</artifactId>
+	<name>Bauer POSIX binder</name>
+	<description>A Bauer binder supporting POSIX STDIN as events inbound and STOUT as events outbound.</description>
 
     <properties>
 		<version.java>21</version.java>
@@ -42,18 +44,6 @@
 			<artifactId>bauer-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.mqttv5.client</artifactId>
-            <version>${version.paho}</version>
-        </dependency>
-    
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${version.javaee-api}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>

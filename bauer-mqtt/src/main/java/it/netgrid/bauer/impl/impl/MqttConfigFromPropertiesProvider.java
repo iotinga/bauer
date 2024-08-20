@@ -1,9 +1,10 @@
-package it.netgrid.bauer.impl;
+package it.netgrid.bauer.impl.impl;
 
 import java.util.Properties;
 
 import it.netgrid.bauer.TopicFactory;
-import it.netgrid.bauer.impl.impl.CBORMqttMessageFactory;
+import it.netgrid.bauer.impl.MqttConfig;
+import it.netgrid.bauer.impl.MqttConfigProvider;
 
 public class MqttConfigFromPropertiesProvider implements MqttConfigProvider {
 

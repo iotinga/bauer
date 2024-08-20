@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import it.netgrid.bauer.ITopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
+import it.netgrid.bauer.impl.impl.MqttConfigFromPropertiesProvider;
 import it.netgrid.bauer.impl.impl.ThreadedMqttClientManager;
 
 public class StaticTopicBinder implements TopicFactoyBinder {

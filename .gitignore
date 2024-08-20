@@ -2,3 +2,5 @@
 bauer-consumer/target/classes
 bauer-core/target/classes
 bauer-core/target/test-classes
+bauer-stream/target/classes/
+bauer-stream/target/test-classes/

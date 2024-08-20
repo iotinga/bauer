@@ -24,7 +24,6 @@ import it.netgrid.bauer.impl.StreamsProvider;
 public class StreamThreadedManager implements StreamManager {
 
     private static final Logger log = LoggerFactory.getLogger(StreamThreadedManager.class);
-    private static final byte[] NEW_LINE_BYTES = "\n".getBytes();
 
     private final List<StreamMessageConsumer> consumers;
     private final StreamsProvider streams;
@@ -39,7 +38,7 @@ public class StreamThreadedManager implements StreamManager {
         this.config = config;
         this.cf = new CBORFactory();
         this.om = new ObjectMapper(this.cf);
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newFixedThreadPool(2);
         this.consumers = new ArrayList<>();
         this.streams = provider;
     }
@@ -55,13 +54,16 @@ public class StreamThreadedManager implements StreamManager {
 
     @Override
     public synchronized void postMessage(JsonNode message) {
-        byte[] payload = message.toString().getBytes();
-        try {
-            this.streams.output().write(payload);
-            this.streams.output().write(NEW_LINE_BYTES);
-        } catch (IOException e) {
-            log.warn("unable to post: %s");
-        }
+        if (message != null)
+            this.executor.submit(() -> {
+                byte[] payload = message.toString().getBytes();
+                try {
+                    this.streams.output().write(payload);
+                    this.streams.output().flush();
+                } catch (IOException e) {
+                    log.warn("unable to post: %s");
+                }
+            });
     }
 
     public synchronized void start() {
@@ -77,7 +79,7 @@ public class StreamThreadedManager implements StreamManager {
             for (StreamMessageConsumer consumer : this.consumers) {
                 consumer.consume(message);
             }
-            if (!this.config.stopBubble()) {
+            if (this.config.isMessageBubblingEnabled()) {
                 this.postMessage(message);
                 log.debug(String.format("bubbling"));
             }

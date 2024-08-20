@@ -10,11 +10,11 @@ public class StreamConfigFromPropertiesProvider implements StreamConfigProvider 
 
         public static final String STREAM_TOPIC_ATTRIBUTE_PROP = "stream_message_topic_attribute";
         public static final String STREAM_PAYLOAD_ATTRIBUTE_PROP = "stream_message_payload_attribute";
-        public static final String STREAM_STOP_BUBBLE_PROP = "stream_stop_bubble";
+        public static final String STREAM_MESSAGE_BUBBLING_ENABLED_PROP = "stream_stop_bubble";
 
         public static final String STREAM_TOPIC_ATTRIBUTE_DEFAULT = "topic";
         public static final String STREAM_PAYLOAD_ATTRIBUTE_DEFAULT = "payload";
-        public static final String STREAM_STOP_BUBBLE_DEFAULT = "1";
+        public static final String STREAM_MESSAGE_BUBBLING_ENABLED_DEFAULT = "0";
 
         private StreamConfig config;
 
@@ -29,7 +29,7 @@ public class StreamConfigFromPropertiesProvider implements StreamConfigProvider 
                                         STREAM_TOPIC_ATTRIBUTE_DEFAULT);
                         String payloadAttribute = p.getProperty(STREAM_PAYLOAD_ATTRIBUTE_PROP,
                                         STREAM_PAYLOAD_ATTRIBUTE_DEFAULT);
-                        String stopBubble = p.getProperty(STREAM_STOP_BUBBLE_PROP, STREAM_STOP_BUBBLE_DEFAULT);
+                        String stopBubble = p.getProperty(STREAM_MESSAGE_BUBBLING_ENABLED_PROP, STREAM_MESSAGE_BUBBLING_ENABLED_DEFAULT);
 
                         this.config = new StreamConfig(topicAttribute, payloadAttribute,
                                         Boolean.parseBoolean(stopBubble));

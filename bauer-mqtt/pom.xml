@@ -15,10 +15,7 @@
 		<version.java>21</version.java>
 		<version.slf4j>2.0.9</version.slf4j>
         <version.paho>1.2.5</version.paho>
-        <version.jackson>2.17.1</version.jackson>
-		<version.junit>4.12</version.junit>
-        <version.mockito>5.12.0</version.mockito>
-        <version.javaee-api>8.0.1</version.javaee-api>        
+        <version.jackson>2.17.1</version.jackson>      
 		<version.junit>5.9.2</version.junit>
         <version.mockito>5.12.0</version.mockito>
         <version.javafaker>1.0.2</version.javafaker>
@@ -47,12 +44,6 @@
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.mqttv5.client</artifactId>
             <version>${version.paho}</version>
-        </dependency>
-    
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${version.javaee-api}</version>
         </dependency>
 
         <dependency>

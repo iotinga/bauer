@@ -34,8 +34,8 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
         this.messageFactory = messageFactory;
         this.manager = streamManager;
         this.handlers = new ArrayList<>();
-        this.name = name;
-        this.patternLevels = name.split(TOPIC_GLUE);
+        this.name = name == null ? "" : name;
+        this.patternLevels = this.name.split(TOPIC_GLUE);
     }
 
     @Override

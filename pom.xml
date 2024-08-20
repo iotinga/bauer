@@ -51,7 +51,7 @@
 		<module>bauer-ffmq</module>
 		<module>bauer-mqtt</module>
 		<module>bauer-nop</module>
-		<module>bauer-posix</module>
+		<module>bauer-stream</module>
 	</modules>
 
 	<properties>

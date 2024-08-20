@@ -9,8 +9,8 @@
           <version>1.0.0</version>
     </parent>
 
-    <artifactId>bauer-posix</artifactId>
-	<name>Bauer POSIX binder</name>
+    <artifactId>bauer-stream</artifactId>
+	<name>Bauer Stream binder</name>
 	<description>A Bauer binder supporting POSIX STDIN as events inbound and STOUT as events outbound.</description>
 
     <properties>

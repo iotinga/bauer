@@ -15,7 +15,6 @@ import it.netgrid.bauer.Topic;
 public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
 
     private static final String TOPIC_GLUE = "/";
-
     private static final String TOPIC_WILD_STEP = "+";
     private static final String TOPIC_WILD_TAIL = "#";
 
@@ -25,15 +24,15 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
 
     private final List<EventHandler<E>> handlers;
 
-    private final StreamManager service;
+    private final StreamManager manager;
 
     private final StreamMessageFactory messageFactory;
 
     private final String[] patternLevels;
 
-    public StreamTopic(StreamManager streamService, StreamMessageFactory messageFactory, String name) {
+    public StreamTopic(StreamManager streamManager, StreamMessageFactory messageFactory, String name) {
         this.messageFactory = messageFactory;
-        this.service = streamService;
+        this.manager = streamManager;
         this.handlers = new ArrayList<>();
         this.name = name;
         this.patternLevels = name.split(TOPIC_GLUE);
@@ -48,7 +47,7 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
     public synchronized void addHandler(EventHandler<E> handler) {
         this.handlers.add(handler);
         if (this.handlers.size() == 1) {
-            this.service.addMessageConsumer(this);
+            this.manager.addMessageConsumer(this);
         }
     }
 
@@ -57,7 +56,7 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
         try {
             StreamEvent<E> streamEvent = new StreamEvent<E>(name, event);
             JsonNode message = this.messageFactory.buildMessage(streamEvent);
-            this.service.postMessage(message);
+            this.manager.postMessage(message);
         } catch (IOException e) {
             log.warn(String.format("cannot serialize on %s: %s", this.name, e.getMessage()));
         }

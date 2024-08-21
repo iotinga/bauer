@@ -1,7 +1,12 @@
 package it.netgrid.bauer.impl;
 
+import com.google.inject.Module;
+
+import java.util.Properties;
+
 import it.netgrid.bauer.ITopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
+import it.netgrid.bauer.helpers.NOPModule;
 import it.netgrid.bauer.helpers.SubstituteTopicFactory;
 
 public class StaticTopicBinder implements TopicFactoyBinder {
@@ -38,5 +43,10 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     public String getTopicFactoryClassStr() {
         return topicFactoryClassStr;
+    }
+
+    @Override
+    public Module getTopicFactoryAsModule(Properties properties) {
+        return new NOPModule();
     }
 }

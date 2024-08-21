@@ -1,6 +1,11 @@
 package it.netgrid.bauer.impl;
 
+import com.google.inject.Module;
+
+import java.util.Properties;
+
 import it.netgrid.bauer.ITopicFactory;
+import it.netgrid.bauer.TopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
 import it.netgrid.bauer.impl.impl.PosixStreamsProvider;
 import it.netgrid.bauer.impl.impl.SimpleStreamMessageFactory;
@@ -29,7 +34,7 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = StreamTopicFactory.class.getName();
 
-    private static final StreamConfigProvider config = new StreamConfigFromPropertiesProvider();
+    private static final StreamConfigProvider config = new StreamConfigFromPropertiesProvider(TopicFactory.getProperties());
 
 
     /**
@@ -50,5 +55,10 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     public String getTopicFactoryClassStr() {
         return topicFactoryClassStr;
+    }
+
+    @Override
+    public Module getTopicFactoryAsModule(Properties properties) {
+        return new StreamTopicFactoryModule(properties);
     }
 }

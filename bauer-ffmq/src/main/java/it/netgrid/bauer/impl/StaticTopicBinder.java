@@ -1,6 +1,11 @@
 package it.netgrid.bauer.impl;
 
+import com.google.inject.Module;
+
+import java.util.Properties;
+
 import it.netgrid.bauer.ITopicFactory;
+import it.netgrid.bauer.TopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
 
 public class StaticTopicBinder implements TopicFactoyBinder {
@@ -24,7 +29,7 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     public static String REQUESTED_API_VERSION = "1.0"; // !final
 
     private static final String topicFactoryClassStr = FfmqTopicFactory.class.getName();
-
+ 
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
@@ -32,7 +37,8 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     private final ITopicFactory topicFactory;
 
     private StaticTopicBinder() {
-    	topicFactory = new FfmqTopicFactory();
+        FfmqConfigFromPropertiesProvider provider = new FfmqConfigFromPropertiesProvider(TopicFactory.getProperties());
+    	topicFactory = new FfmqTopicFactory(provider);
     }
 
     public ITopicFactory getTopicFactory() {
@@ -41,5 +47,10 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     public String getTopicFactoryClassStr() {
         return topicFactoryClassStr;
+    }
+
+    @Override
+    public Module getTopicFactoryAsModule(Properties properties) {
+        return new FfmqTopicFactoryModule(properties);
     }
 }

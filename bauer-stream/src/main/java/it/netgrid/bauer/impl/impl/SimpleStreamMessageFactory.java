@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.google.inject.Inject;
 
 import it.netgrid.bauer.impl.StreamConfig;
 import it.netgrid.bauer.impl.StreamEvent;
@@ -21,6 +22,7 @@ public class SimpleStreamMessageFactory implements StreamMessageFactory {
 
     private final StreamConfig config;
 
+    @Inject
     public SimpleStreamMessageFactory(StreamConfig config) {
         this.om = new ObjectMapper();
         this.config = config;

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.fasterxml.jackson.dataformat.cbor.CBORParser;
+import com.google.inject.Inject;
 
 import it.netgrid.bauer.impl.StreamConfig;
 import it.netgrid.bauer.impl.StreamMessageConsumer;
@@ -35,6 +36,7 @@ public class StreamThreadedManager implements StreamManager {
 
     private Future<Integer> parser;
 
+    @Inject
     public StreamThreadedManager(StreamConfig config, StreamsProvider provider) {
         this.config = config;
         this.cf = new CBORFactory();

@@ -7,7 +7,12 @@ import org.eclipse.paho.mqttv5.common.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Module;
+
+import java.util.Properties;
+
 import it.netgrid.bauer.ITopicFactory;
+import it.netgrid.bauer.TopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
 import it.netgrid.bauer.impl.impl.MqttConfigFromPropertiesProvider;
 import it.netgrid.bauer.impl.impl.ThreadedMqttClientManager;
@@ -36,7 +41,7 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = MqttTopicFactory.class.getName();
 
-    private static final MqttConfigProvider config = new MqttConfigFromPropertiesProvider();
+    private static final MqttConfigProvider config = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
 
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
@@ -69,6 +74,11 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     public String getTopicFactoryClassStr() {
         return topicFactoryClassStr;
+    }
+
+    @Override
+    public Module getTopicFactoryAsModule(Properties properties) {
+        return new MqttTopicFactoryModule(properties);
     }
 
 }

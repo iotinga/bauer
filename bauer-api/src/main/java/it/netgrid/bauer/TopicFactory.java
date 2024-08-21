@@ -1,5 +1,7 @@
 package it.netgrid.bauer;
 
+import java.util.Properties;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,13 +12,16 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Module;
+
+import it.netgrid.bauer.helpers.NOPModule;
 import it.netgrid.bauer.helpers.NOPTopicFactory;
 import it.netgrid.bauer.helpers.SubstituteTopic;
 import it.netgrid.bauer.helpers.SubstituteTopicEvent;
@@ -38,7 +43,7 @@ public final class TopicFactory {
     
     private static String configPropertiesPath = null;
 	private static final String DEFAULT_CONFIG_PROPERTIES_NAME = "bauer.properties";
-	
+	static final int INIT_RETRIES_TIMEOUT_MILLIS = 2000;
     static final int UNINITIALIZED = 0;
     static final int ONGOING_INITIALIZATION = 1;
     static final int FAILED_INITIALIZATION = 2;
@@ -48,6 +53,7 @@ public final class TopicFactory {
     static volatile int INITIALIZATION_STATE = UNINITIALIZED;
     static SubstituteTopicFactory SUBST_FACTORY = new SubstituteTopicFactory();
     static NOPTopicFactory NOP_FALLBACK_FACTORY = new NOPTopicFactory();
+    static NOPModule NOP_FALLBACK_MODULE = new NOPModule();
 
     // Support for detecting mismatched logger names.
     static final String DETECT_TOPIC_NAME_MISMATCH_PROPERTY = "bauer.detectTopicNameMismatch";
@@ -58,6 +64,8 @@ public final class TopicFactory {
     static private final String[] API_COMPATIBILITY_LIST = new String[] { "1.0" };
     
     private static Properties properties;
+
+    private static CompletableFuture<Module> FACTORY_MODULE;
 
 	private TopicFactory() {}
 
@@ -244,6 +252,39 @@ public final class TopicFactory {
         }
         throw new IllegalStateException("Unreachable code");
     }
+
+    public synchronized static Module getAsModule(Properties properties) {
+        if (FACTORY_MODULE == null) {
+            FACTORY_MODULE = new CompletableFuture<>();
+            new Thread(() -> {
+                if (INITIALIZATION_STATE == UNINITIALIZED) {
+                    synchronized (TopicFactory.class) {
+                        if (INITIALIZATION_STATE == UNINITIALIZED) {
+                            INITIALIZATION_STATE = ONGOING_INITIALIZATION;
+                            performInitialization();
+                        }
+                    }
+                }
+                while (!FACTORY_MODULE.isDone()) {
+                    switch (INITIALIZATION_STATE) {
+                    case SUCCESSFUL_INITIALIZATION:
+                        FACTORY_MODULE.complete(StaticTopicBinder.getSingleton().getTopicFactoryAsModule(properties));
+                    case NOP_FALLBACK_INITIALIZATION:
+                        FACTORY_MODULE.complete(NOP_FALLBACK_MODULE);
+                    case FAILED_INITIALIZATION:
+                        FACTORY_MODULE.completeExceptionally(new IllegalStateException("Failed Bauer initialization"));
+                    case ONGOING_INITIALIZATION:
+                        try {
+                            Thread.sleep(INIT_RETRIES_TIMEOUT_MILLIS);
+                        } catch (InterruptedException e) {
+                            FACTORY_MODULE.completeExceptionally(e);
+                        }
+                    }
+                }
+            }).start();
+        }
+        return FACTORY_MODULE.join();
+    }
     
     private static void replayEvents() {
         final LinkedBlockingQueue<SubstituteTopicEvent> queue = SUBST_FACTORY.getEventQueue();
@@ -317,8 +358,6 @@ public final class TopicFactory {
             SUBST_FACTORY.postInitialization();
             for (SubstituteTopic<?> substTopic : SUBST_FACTORY.getTopics()) {
             	substTopic.updateDelegate();
-//            	Topic<?> topic = getTopic(substTopic.getName());
-//            	substTopic.setDelegate(topic);
             }
         }
 

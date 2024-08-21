@@ -41,17 +41,14 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 		gson = gsonBuilder.create();
 	}
 
+
 	private final FfmqConfigProvider config;
 	private Context context;
 	private TopicConnectionFactory connFactory;
 
-	public FfmqTopicFactory() {
-		this.config = new FfmqConfigFromPropertiesProvider();
-	}
-
 	@Inject
-	public FfmqTopicFactory(FfmqConfigProvider configProvider) {
-		this.config = configProvider;
+	public FfmqTopicFactory(FfmqConfigProvider provider) {
+		this.config = provider;
 	}
 
 	@Override

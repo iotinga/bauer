@@ -1,5 +1,9 @@
 package it.netgrid.bauer.impl;
 
+import com.google.inject.Module;
+
+import java.util.Properties;
+
 import it.netgrid.bauer.ITopicFactory;
 import it.netgrid.bauer.TopicFactoyBinder;
 import it.netgrid.bauer.helpers.SubstituteTopicFactory;
@@ -36,4 +40,9 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     public String getTopicFactoryClassStr() {
         throw new UnsupportedOperationException("This code should never make it into bauer-api.jar");    }
+
+    @Override
+    public Module getTopicFactoryAsModule(Properties properties) {
+        throw new UnsupportedOperationException("Unimplemented method 'getTopicFactoryAsModule'");
+    }
 }

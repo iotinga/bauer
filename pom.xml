@@ -1,18 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.netgrid</groupId>
 	<artifactId>bauer</artifactId>
-	<version>0.0.8</version>
+	<version>1.1.1</version>
 	<packaging>pom</packaging>
 	<name>Bauer</name>
 	<description>Standard Topic-Based Messaging Facade for Java</description>
 	<url>https://bitbucket.org/netgrid/bauer</url>
 	<scm>
-		<url>git@bitbucket.org:netgrid/bauer.git</url>
-		<developerConnection>@netgrid</developerConnection>
-	</scm>
+		<connection>scm:git:git://github.com:iotinga/bauer.git</connection>
+		<developerConnection>scm:git:git://github.com:iotinga/bauer.git</developerConnection>
+		<url>https://github.com/iotinga/bauer</url>
+	  <tag>bauer-0.0.15</tag>
+  </scm>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -48,10 +49,13 @@
 	<modules>
 		<module>bauer-api</module>
 		<module>bauer-ffmq</module>
+		<module>bauer-mqtt</module>
+		<module>bauer-nop</module>
+		<module>bauer-stream</module>
 	</modules>
 
 	<properties>
-		<version.java>1.8</version.java>
+		<version.java>11</version.java>
 	</properties>
 
 
@@ -75,7 +79,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.3</version>
+				<version>1.6.14</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -86,7 +90,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>

@@ -3,8 +3,8 @@ package it.netgrid.bauer.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
 
 import com.google.gson.FieldNamingStrategy;
 

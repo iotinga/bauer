@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<licenses>
@@ -14,20 +13,21 @@
 	<parent>
 		<groupId>it.netgrid</groupId>
 		<artifactId>bauer</artifactId>
-		<version>0.0.8</version>
+		<version>1.1.1</version>
 	</parent>
 	<artifactId>bauer-ffmq</artifactId>
 	<name>Bauer FFMQ binder</name>
 	<description>A Bauer binder for FFMQ</description>
 
 	<properties>
-		<version.parent>0.0.8</version.parent>
-		<version.java>1.8</version.java>
-		<version.junit>4.12</version.junit>
-		<version.jfairy>0.4.3</version.jfairy>
-		<version.slf4j>1.7.21</version.slf4j>
-		<version.gson>2.6.2</version.gson>
-		<version.ffmq>3.0.7</version.ffmq>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.java>21</version.java>
+		<version.slf4j>2.0.9</version.slf4j>
+		<version.gson>2.10.1</version.gson>
+		<version.ffmq>4.0.14</version.ffmq>
+		<version.junit>5.9.2</version.junit>
+        <version.mockito>5.12.0</version.mockito>
+        <version.javafaker>1.0.2</version.javafaker>
 	</properties>
 
 	<repositories>
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>it.netgrid</groupId>
 			<artifactId>bauer-api</artifactId>
-			<version>${version.parent}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -54,7 +54,7 @@
 		<!-- https://mvnrepository.com/artifact/net.timewalker.ffmq/ffmq3-core -->
 		<dependency>
 			<groupId>net.timewalker.ffmq</groupId>
-			<artifactId>ffmq3-core</artifactId>
+			<artifactId>ffmq4-core</artifactId>
 			<version>${version.ffmq}</version>
 		</dependency>
 
@@ -66,19 +66,29 @@
 		</dependency>
 
 		<!-- TESTING DEPENDENCIES -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${version.javafaker}</version>
+            <scope>test</scope>
+        </dependency>
+		<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
 		<dependency>
-			<groupId>io.codearte.jfairy</groupId>
-			<artifactId>jfairy</artifactId>
-			<version>${version.jfairy}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
-			<scope>test</scope>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>4.0.1</version>
 		</dependency>
 
 	</dependencies>
@@ -170,12 +180,10 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>${main.path}</mainClass>
 								</transformer>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 							</transformers>
 						</configuration>
 					</execution>

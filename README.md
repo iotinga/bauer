@@ -10,7 +10,7 @@ Bauer has been written with esteem and respect for slf4j, the world famous Simpl
 <dependency>
   <groupId>it.netgrid</groupId>
   <artifactId>bauer-api</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.15-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -40,18 +40,18 @@ myCustomTopic.addHandler(new EventHandler<MyCustomPayload>() {
 	}
 
 	@Override
-	public boolean handle(MyCustomPayload event) {
+	public boolean handle(String topic, MyCustomPayload event) {
 		System.out.println(event.getMyCustomProperty())
 		return true;
 	}
 });
 ```
 
-### Binding with a event-queue framework ad deployment time
+### Binding with a event-queue framework at deployment time
 As mentioned previously, Bauer supports various topic-based event-queues frameworks. Some of them still in development. The Bauer distribution ships with serveral jar files referred as "Bauer bindings", with each binding corresponding to a supported framework.
 
 #### bauer-ffmq ####
-Binding for [FFMQ 3.0.7](http://timewalker74.github.io/ffmq/), a JMS compatible ultra-light weight message queue system.
+Binding for [FFMQ 4.0.14](http://timewalker74.github.io/ffmq/), a JMS compatible ultra-light weight message queue system.
 
 #### bauer-mqtt [DEVELOPMENT] ####
 Binding for [MQTT](http://mqtt.org/), a M2M/Internet-of-Things connectivity protocol. It was designed as an extremely lightweight publish/subscribe messaging transport.
@@ -76,7 +76,31 @@ A topic is a stream of events of the same kind, sent at different times from dif
 Piece of code executed each time a new event occurs in the topic which holds the code
 
 ### ...one more thing! ###
-By default, Bauer uses JSON for events de/serialization. We choose JSON interoperability over binary efficiency.
+By default, bauer-ffmq (JMS) uses JSON for events de/serialization. We choose JSON interoperability over binary efficiency.
+Bauer-MQTT uses CBOR for events de/serialization.
 
 
 [Who was Bauer?](https://en.wikipedia.org/wiki/Felice_Bauer)
+
+# Deploy #
+you need access to https://oss.sonatype.org/
+
+check your  ~/.m2/settings.xml
+
+```
+<settings>
+  <servers>
+    <server>
+      <id>ossrh</id>
+      <username>USERNAME</username>
+      <password>PASSWORD</password>
+    </server>
+  </servers>
+</settings>
+```
+
+then run in repo
+
+```
+mvn deploy
+```

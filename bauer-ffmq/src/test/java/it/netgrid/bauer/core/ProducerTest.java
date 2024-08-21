@@ -15,10 +15,9 @@ import javax.jms.TopicSession;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-import net.timewalker.ffmq3.FFMQConstants;
+import net.timewalker.ffmq4.FFMQConstants;
 
 public class ProducerTest implements ExceptionListener {
 	

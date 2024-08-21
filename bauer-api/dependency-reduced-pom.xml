@@ -3,7 +3,7 @@
   <parent>
     <artifactId>bauer</artifactId>
     <groupId>it.netgrid</groupId>
-    <version>0.0.2</version>
+    <version>0.0.11</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>bauer-api</artifactId>
@@ -105,15 +105,28 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <target>
+            <echo>Removing bauer-api's dummy StaticTopicBinder</echo>
+            <delete />
+          </target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <properties>
-    <version.junit>4.12</version.junit>
-    <version.jfairy>0.4.3</version.jfairy>
-    <version.gson>2.6.2</version.gson>
-    <version.java>1.8</version.java>
-    <version.slf4j>1.7.21</version.slf4j>
-    <version.ffmq>3.0.7</version.ffmq>
+    <version.java>11</version.java>
+    <version.slf4j>2.0.9</version.slf4j>
   </properties>
 </project>
 

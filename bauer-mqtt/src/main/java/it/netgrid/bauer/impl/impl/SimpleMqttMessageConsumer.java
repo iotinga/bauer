@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.netgrid.bauer.EventHandler;
+import it.netgrid.bauer.helpers.TopicUtils;
 import it.netgrid.bauer.impl.MqttMessageConsumer;
 import it.netgrid.bauer.impl.MqttMessageFactory;
 import it.netgrid.bauer.impl.MqttTopic;
@@ -31,7 +32,6 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
     private final String mqttPattern;
     private final boolean sharedSubscription;
     private final MqttMessageFactory factory;
-    private final String[] mqttPatternParts;
     private final String name;
 
     public SimpleMqttMessageConsumer(MqttMessageFactory factory, String name, String mqttPattern,
@@ -39,7 +39,6 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
         this.name = name;
         this.mqttPattern = mqttPattern;
         this.sharedSubscription = sharedSubscription;
-        this.mqttPatternParts = this.mqttPattern.split("/");
         this.factory = factory;
         this.handler = handler;
         this.incomingEvents = new LinkedBlockingQueue<>();
@@ -84,24 +83,7 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
 
     public boolean matches(String fullTopic) {
         String normalized = this.normalizedTopicFrom(fullTopic);
-        String[] topicLevels = normalized.split(MqttTopic.PATH_SEPARATOR);
-
-        int topicLength = topicLevels.length;
-        int patternLength = this.mqttPatternParts.length;
-
-        for (int i = 0; i < patternLength; i++) {
-            if (this.mqttPatternParts[i].equals("#")) {
-                return true;
-            }
-            if (i >= topicLength) {
-                return false;
-            }
-            if (!this.mqttPatternParts[i].equals("+") && !this.mqttPatternParts[i].equals(topicLevels[i])) {
-                return false;
-            }
-        }
-
-        return topicLength == patternLength;
+        return TopicUtils.match(this.mqttPattern, normalized);
     }
 
     @Override

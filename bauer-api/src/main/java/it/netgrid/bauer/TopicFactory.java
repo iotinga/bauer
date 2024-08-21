@@ -30,20 +30,20 @@ import it.netgrid.bauer.helpers.Util;
 
 import it.netgrid.bauer.impl.StaticTopicBinder;
 
-
 /**
  * see https://github.com/qos-ch/slf4j/tree/v_1.7.21/slf4j-api
- * reference implementation https://github.com/qos-ch/slf4j/tree/v_1.7.21/slf4j-api
+ * reference implementation
+ * https://github.com/qos-ch/slf4j/tree/v_1.7.21/slf4j-api
  * SLF4J 1.7.21
  */
 
 public final class TopicFactory {
-    
+
     private static final Logger log = LoggerFactory.getLogger(TopicFactory.class);
-    
+
     private static String configPropertiesPath = null;
-	private static final String DEFAULT_CONFIG_PROPERTIES_NAME = "bauer.properties";
-	static final int INIT_RETRIES_TIMEOUT_MILLIS = 2000;
+    private static final String DEFAULT_CONFIG_PROPERTIES_NAME = "bauer.properties";
+    static final int INIT_RETRIES_TIMEOUT_MILLIS = 2000;
     static final int UNINITIALIZED = 0;
     static final int ONGOING_INITIALIZATION = 1;
     static final int FAILED_INITIALIZATION = 2;
@@ -62,12 +62,13 @@ public final class TopicFactory {
     static boolean DETECT_TOPIC_NAME_MISMATCH = Util.safeGetBooleanSystemProperty(DETECT_TOPIC_NAME_MISMATCH_PROPERTY);
 
     static private final String[] API_COMPATIBILITY_LIST = new String[] { "1.0" };
-    
+
     private static Properties properties;
 
     private static CompletableFuture<Module> FACTORY_MODULE;
 
-	private TopicFactory() {}
+    private TopicFactory() {
+    }
 
     static void reset() {
         INITIALIZATION_STATE = UNINITIALIZED;
@@ -78,7 +79,7 @@ public final class TopicFactory {
     }
 
     public final static String getConfigPropertiesPath() {
-        if(configPropertiesPath == null) {
+        if (configPropertiesPath == null) {
             return DEFAULT_CONFIG_PROPERTIES_NAME;
         }
 
@@ -91,7 +92,7 @@ public final class TopicFactory {
             versionSanityCheck();
         }
     }
-    
+
     private static boolean messageContainsOrgBauerjImplStaticTopicBinder(String msg) {
         if (msg == null)
             return false;
@@ -101,7 +102,7 @@ public final class TopicFactory {
             return true;
         return false;
     }
-	
+
     private final static void bind() {
         try {
             Set<URL> staticTopicBinderPathSet = null;
@@ -140,14 +141,14 @@ public final class TopicFactory {
         }
     }
 
-	private final static void failedBinding(Throwable t) {
-		TopicFactory.report("Failed to instantiate Bauer TopicFactory", t);
+    private final static void failedBinding(Throwable t) {
+        TopicFactory.report("Failed to instantiate Bauer TopicFactory", t);
     }
-	
-	private final static void report(String message, Throwable t) {
-		System.out.println(String.format("%s: %s", message, t.getMessage()));
-	}
-	
+
+    private final static void report(String message, Throwable t) {
+        System.out.println(String.format("%s: %s", message, t.getMessage()));
+    }
+
     private final static void versionSanityCheck() {
         try {
             String requested = StaticTopicBinder.REQUESTED_API_VERSION;
@@ -160,7 +161,7 @@ public final class TopicFactory {
             }
             if (!match) {
                 Util.report("The requested version " + requested + " by your bauer binding is not compatible with "
-                                + Arrays.asList(API_COMPATIBILITY_LIST).toString());
+                        + Arrays.asList(API_COMPATIBILITY_LIST).toString());
             }
         } catch (java.lang.NoSuchFieldError nsfe) {
             // given our large user base and BAUER's commitment to backward
@@ -171,10 +172,10 @@ public final class TopicFactory {
             // we should never reach here
             Util.report("Unexpected problem occured during version sanity check", e);
         }
-    }	
+    }
 
     private static String STATIC_TOPIC_BINDER_PATH = "it/netgrid/bauer/impl/StaticTopicBinder.class";
-	
+
     static Set<URL> findPossibleStaticTopicBinderPathSet() {
         // use Set instead of list in order to deal with bug #138
         // LinkedHashSet appropriate here because it preserves insertion order
@@ -197,11 +198,11 @@ public final class TopicFactory {
         }
         return staticTopicBinderPathSet;
     }
-	
+
     private static boolean isAmbiguousStaticTopicBinderPathSet(Set<URL> binderPathSet) {
         return binderPathSet.size() > 1;
     }
-	
+
     private static void reportMultipleBindingAmbiguity(Set<URL> binderPathSet) {
         if (isAmbiguousStaticTopicBinderPathSet(binderPathSet)) {
             Util.report("Class path contains multiple BAUER bindings.");
@@ -221,15 +222,16 @@ public final class TopicFactory {
     private static void reportActualBinding(Set<URL> binderPathSet) {
         // binderPathSet can be null under Android
         if (binderPathSet != null && isAmbiguousStaticTopicBinderPathSet(binderPathSet)) {
-            Util.report("Actual binding is of type [" + StaticTopicBinder.getSingleton().getTopicFactoryClassStr() + "]");
+            Util.report(
+                    "Actual binding is of type [" + StaticTopicBinder.getSingleton().getTopicFactoryClassStr() + "]");
         }
     }
-    
-	public static <E> Topic<E> getTopic(String name) {
+
+    public static <E> Topic<E> getTopic(String name) {
         ITopicFactory iTopicFactory = getITopicFactory();
         return iTopicFactory.getTopic(name);
-	}
-	
+    }
+
     public static ITopicFactory getITopicFactory() {
         if (INITIALIZATION_STATE == UNINITIALIZED) {
             synchronized (TopicFactory.class) {
@@ -240,52 +242,48 @@ public final class TopicFactory {
             }
         }
         switch (INITIALIZATION_STATE) {
-        case SUCCESSFUL_INITIALIZATION:
-            return StaticTopicBinder.getSingleton().getTopicFactory();
-        case NOP_FALLBACK_INITIALIZATION:
-            return NOP_FALLBACK_FACTORY;
-        case FAILED_INITIALIZATION:
-            throw new IllegalStateException("Failed Bauer initialization");
-        case ONGOING_INITIALIZATION:
-            // support re-entrant behavior.
-            return SUBST_FACTORY;
+            case SUCCESSFUL_INITIALIZATION:
+                return StaticTopicBinder.getSingleton().getTopicFactory();
+            case NOP_FALLBACK_INITIALIZATION:
+                return NOP_FALLBACK_FACTORY;
+            case FAILED_INITIALIZATION:
+                throw new IllegalStateException("Failed Bauer initialization");
+            case ONGOING_INITIALIZATION:
+                // support re-entrant behavior.
+                return SUBST_FACTORY;
         }
         throw new IllegalStateException("Unreachable code");
     }
 
-    public synchronized static Module getAsModule(Properties properties) {
+    public static Module getAsModule(Properties properties) {
         if (FACTORY_MODULE == null) {
             FACTORY_MODULE = new CompletableFuture<>();
-            new Thread(() -> {
-                if (INITIALIZATION_STATE == UNINITIALIZED) {
-                    synchronized (TopicFactory.class) {
-                        if (INITIALIZATION_STATE == UNINITIALIZED) {
-                            INITIALIZATION_STATE = ONGOING_INITIALIZATION;
-                            performInitialization();
-                        }
-                    }
-                }
-                while (!FACTORY_MODULE.isDone()) {
-                    switch (INITIALIZATION_STATE) {
+            while (!FACTORY_MODULE.isDone()) {
+                switch (INITIALIZATION_STATE) {
+                    case UNINITIALIZED:
+                        INITIALIZATION_STATE = ONGOING_INITIALIZATION;
+                        performInitialization();
+                        break;
                     case SUCCESSFUL_INITIALIZATION:
-                        FACTORY_MODULE.complete(StaticTopicBinder.getSingleton().getTopicFactoryAsModule(properties));
+                        FACTORY_MODULE
+                                .complete(StaticTopicBinder.getSingleton().getTopicFactoryAsModule(properties));
                     case NOP_FALLBACK_INITIALIZATION:
                         FACTORY_MODULE.complete(NOP_FALLBACK_MODULE);
                     case FAILED_INITIALIZATION:
-                        FACTORY_MODULE.completeExceptionally(new IllegalStateException("Failed Bauer initialization"));
+                        FACTORY_MODULE
+                                .completeExceptionally(new IllegalStateException("Failed Bauer initialization"));
                     case ONGOING_INITIALIZATION:
                         try {
                             Thread.sleep(INIT_RETRIES_TIMEOUT_MILLIS);
                         } catch (InterruptedException e) {
                             FACTORY_MODULE.completeExceptionally(e);
                         }
-                    }
                 }
-            }).start();
+            }
         }
         return FACTORY_MODULE.join();
     }
-    
+
     private static void replayEvents() {
         final LinkedBlockingQueue<SubstituteTopicEvent> queue = SUBST_FACTORY.getEventQueue();
         final int queueSize = queue.size();
@@ -304,7 +302,7 @@ public final class TopicFactory {
             eventList.clear();
         }
     }
-    
+
     private static void emitReplayOrSubstituionWarning(SubstituteTopicEvent event, int queueSize) {
         if (event.getTopic().isDelegateEventAware()) {
             emitReplayWarning(queueSize);
@@ -314,19 +312,20 @@ public final class TopicFactory {
             emitSubstitutionWarning();
         }
     }
-    
+
     private static void emitReplayWarning(int eventCount) {
-        Util.report("A number (" + eventCount + ") of topic calls during the initialization phase have been intercepted and are");
+        Util.report("A number (" + eventCount
+                + ") of topic calls during the initialization phase have been intercepted and are");
         Util.report("now being replayed. These are subject to the filtering rules of the underlying topics system.");
     }
-    
+
     private static void emitSubstitutionWarning() {
         Util.report("The following set of substitute topic may have been accessed");
         Util.report("during the initialization phase. Topic calls during this");
         Util.report("phase were not honored. However, subsequent topic calls to these");
         Util.report("topics will work as normally expected.");
     }
-    
+
     private static void replaySingleEvent(SubstituteTopicEvent event) {
         if (event == null)
             return;
@@ -340,87 +339,90 @@ public final class TopicFactory {
         if (substTopic.isDelegateNOP()) {
             // nothing to do
         } else if (substTopic.isDelegateEventAware()) {
-        	switch(event.getAction()) {
-        	case ADD_HANDLER:
-        		substTopic.replayAddHandler(event.getHandler());
-        	break;
-        	case POST:
-        		substTopic.replayPost(event.getEvent());
-    		break;
-        	}
+            switch (event.getAction()) {
+                case ADD_HANDLER:
+                    substTopic.replayAddHandler(event.getHandler());
+                    break;
+                case POST:
+                    substTopic.replayPost(event.getEvent());
+                    break;
+            }
         } else {
             Util.report(topicName);
         }
     }
-    
+
     private static void fixSubstituteTopics() {
         synchronized (SUBST_FACTORY) {
             SUBST_FACTORY.postInitialization();
             for (SubstituteTopic<?> substTopic : SUBST_FACTORY.getTopics()) {
-            	substTopic.updateDelegate();
+                substTopic.updateDelegate();
             }
         }
 
     }
-    
+
     // Configuration
     public static Properties getProperties() {
-    	if(properties == null) {
-    		loadProperties();
-    	}
-    	
-    	return properties;
-    }
-    
-	private static boolean loadPropertiesAsResource(String propertiesResourceName) {
-		if(properties == null) {
-			try(InputStream resourceStream = TopicFactory.class.getClassLoader().getResourceAsStream(propertiesResourceName); ) {
-				properties = new Properties();
-				properties.load(resourceStream);
-			} catch (NullPointerException e) {
-				log.debug("Unable to load properties");
-			} catch (IOException e) {
-				log.debug(String.format("Unable to load config resource: %s", propertiesResourceName), e);
-			}
-		}
-		return properties != null;
-	}
-	
-	private static boolean loadPropertiesFromFile(String filePath) {
-		if(properties == null) {
-			FileInputStream in = null;
-			try {
-				in = new FileInputStream(filePath);
-			} catch (FileNotFoundException e) {
-				log.debug(String.format("Unable to load config file: %s", filePath), e);
-			}
-			
-			if(in != null) {
-				try {
-					properties = new Properties();
-					properties.load(in);
-				} catch (IOException e) {
-					log.warn("Invalid properties file format", e);
-				} finally {
-					try {
-						in.close();
-					} catch (IOException e) {
-						log.debug("Input stream already closed");
-					}	
-				}
-			}
-		}
-		return properties != null;
-	}
-	
-	private static void loadProperties() {
-		if(loadPropertiesFromFile(getConfigPropertiesPath())) return;
+        if (properties == null) {
+            loadProperties();
+        }
 
-		if(loadPropertiesAsResource(DEFAULT_CONFIG_PROPERTIES_NAME)) return;
-		
-		if (properties == null) {
-			log.info(String.format("No %s properties found. Run with defaults.", DEFAULT_CONFIG_PROPERTIES_NAME));
-			properties = new Properties();
-		}
-	}
+        return properties;
+    }
+
+    private static boolean loadPropertiesAsResource(String propertiesResourceName) {
+        if (properties == null) {
+            try (InputStream resourceStream = TopicFactory.class.getClassLoader()
+                    .getResourceAsStream(propertiesResourceName);) {
+                properties = new Properties();
+                properties.load(resourceStream);
+            } catch (NullPointerException e) {
+                log.debug("Unable to load properties");
+            } catch (IOException e) {
+                log.debug(String.format("Unable to load config resource: %s", propertiesResourceName), e);
+            }
+        }
+        return properties != null;
+    }
+
+    private static boolean loadPropertiesFromFile(String filePath) {
+        if (properties == null) {
+            FileInputStream in = null;
+            try {
+                in = new FileInputStream(filePath);
+            } catch (FileNotFoundException e) {
+                log.debug(String.format("Unable to load config file: %s", filePath), e);
+            }
+
+            if (in != null) {
+                try {
+                    properties = new Properties();
+                    properties.load(in);
+                } catch (IOException e) {
+                    log.warn("Invalid properties file format", e);
+                } finally {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        log.debug("Input stream already closed");
+                    }
+                }
+            }
+        }
+        return properties != null;
+    }
+
+    private static void loadProperties() {
+        if (loadPropertiesFromFile(getConfigPropertiesPath()))
+            return;
+
+        if (loadPropertiesAsResource(DEFAULT_CONFIG_PROPERTIES_NAME))
+            return;
+
+        if (properties == null) {
+            log.info(String.format("No %s properties found. Run with defaults.", DEFAULT_CONFIG_PROPERTIES_NAME));
+            properties = new Properties();
+        }
+    }
 }

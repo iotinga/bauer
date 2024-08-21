@@ -11,12 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.Topic;
+import it.netgrid.bauer.helpers.TopicUtils;
 
 public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
-
-    private static final String TOPIC_GLUE = "/";
-    private static final String TOPIC_WILD_STEP = "+";
-    private static final String TOPIC_WILD_TAIL = "#";
 
     private static final Logger log = LoggerFactory.getLogger(StreamTopic.class);
 
@@ -28,14 +25,11 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
 
     private final StreamMessageFactory messageFactory;
 
-    private final String[] patternLevels;
-
     public StreamTopic(StreamManager streamManager, StreamMessageFactory messageFactory, String name) {
         this.messageFactory = messageFactory;
         this.manager = streamManager;
         this.handlers = new ArrayList<>();
         this.name = name == null ? "" : name;
-        this.patternLevels = this.name.split(TOPIC_GLUE);
     }
 
     @Override
@@ -69,7 +63,7 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
         try {
             StreamEvent<JsonNode> streamEvent = this.messageFactory.buildEvent(message);
 
-            if (this.match(streamEvent.topic())) {
+            if (TopicUtils.match(this.name, streamEvent.topic())) {
                 for (EventHandler<E> handler : this.handlers) {
                     try {
                         StreamEvent<E> event = this.messageFactory.buildEvent(message, handler.getEventClass());
@@ -85,37 +79,4 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
         }
         return true;
     }
-
-    public boolean match(String topic) {
-        if(topic == null) return false;
-        
-        String[] topicLevels = topic.split(TOPIC_GLUE);
-
-        int index = 0;
-
-        while (index < patternLevels.length) {
-            String patternPart = patternLevels[index];
-
-            if (patternPart.equals(TOPIC_WILD_TAIL)) {
-                return index == patternLevels.length - 1;
-            }
-
-            if (patternPart.equals(TOPIC_WILD_STEP)) {
-                index++;
-                if (index >= topicLevels.length && index < patternLevels.length) {
-                    return false;
-                }
-                continue;
-            }
-
-            if (index >= topicLevels.length || !patternPart.equals(topicLevels[index])) {
-                return false;
-            }
-
-            index++;
-        }
-
-        return index == topicLevels.length && index == patternLevels.length;
-    }
-
 }

@@ -1,7 +1,5 @@
 package it.netgrid.bauer.impl;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -15,17 +13,6 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 
 public class StreamTopicTest {
-
-    private static final String MQTT_PATTERN_FULL = "a/b/c/d";
-    private static final String MQTT_PATTERN_SIMPLE = "a/b/#";
-    private static final String MQTT_PATTERN_INNER = "a/+/c/d";
-    private static final String MQTT_PATTERN_MULTI = "+/b/+/d";
-    private static final String MQTT_PATTERN_MIXED = "+/b/+/#";
-
-    private static final String MQTT_TOPIC_SHORT = "a/b/c/d";
-    private static final String MQTT_TOPIC_FULL = "a/b/c/d/e/f";
-    private static final String MQTT_TOPIC_SHORT_ALTERNATE = "a/2/c/d";
-    private static final String MQTT_TOPIC_ALTERNATE = "1/b/3/d/4/f";
 
     private EventExample eventExample;
     private StreamManager streamManager;
@@ -82,75 +69,5 @@ public class StreamTopicTest {
         streamTopic.consume(message);
 
         verify(handler, times(1)).handle(streamTopic.getName(), eventExample);
-    }
-
-    @Test
-    public void mqttPatternFullMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_FULL);
-        boolean result = streamTopic.match(MQTT_TOPIC_SHORT);
-        assertTrue(result);
-    }
-
-    @Test
-    public void mqttPatternFullNoMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_FULL);
-        boolean result = streamTopic.match(MQTT_TOPIC_ALTERNATE);
-        assertFalse(result);
-    }
-
-    @Test
-    public void mqttPatternSimpleMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_SIMPLE);
-        boolean result = streamTopic.match(MQTT_TOPIC_FULL);
-        assertTrue(result);
-    }
-
-    @Test
-    public void mqttPatternSimpleNoMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_SIMPLE);
-        boolean result = streamTopic.match(MQTT_TOPIC_ALTERNATE);
-        assertFalse(result);
-    }
-
-    @Test
-    public void mqttPatternInnerMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_INNER);
-        boolean result = streamTopic.match(MQTT_TOPIC_SHORT_ALTERNATE);
-        assertTrue(result);
-    }
-
-    @Test
-    public void mqttPatternInnerNoMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_INNER);
-        boolean result = streamTopic.match(MQTT_TOPIC_ALTERNATE);
-        assertFalse(result);
-    }
-
-    @Test
-    public void mqttPatternMultiMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_MULTI);
-        boolean result = streamTopic.match(MQTT_TOPIC_SHORT);
-        assertTrue(result);
-    }
-
-    @Test
-    public void mqttPatternMultiNoMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_MULTI);
-        boolean result = streamTopic.match(MQTT_TOPIC_FULL);
-        assertFalse(result);
-    }
-
-    @Test
-    public void mqttPatternMixedMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_MIXED);
-        boolean result = streamTopic.match(MQTT_TOPIC_ALTERNATE);
-        assertTrue(result);
-    }
-
-    @Test
-    public void mqttPatternMixedNoMatchTest() throws IOException {
-        StreamTopic<EventExample> streamTopic = new StreamTopic<>(streamManager, messageFactory, MQTT_PATTERN_MIXED);
-        boolean result = streamTopic.match(MQTT_TOPIC_SHORT_ALTERNATE);
-        assertFalse(result);
     }
 }

@@ -25,9 +25,9 @@ public class JSONMqttMessageFactoryTest {
         faker = new Faker();
         eventExample = new EventExample();
         eventExample.setField1(faker.lorem().sentence());
-        eventExample.setField2(faker.random().nextInt(Integer.MAX_VALUE));
+        eventExample.setField2(faker.random().nextInt(100));
         eventExample.setField3((float) faker.random().nextInt(0, 100000) / 100);
-        int[] field4 = new int[faker.random().nextInt(Integer.MAX_VALUE)];
+        int[] field4 = new int[faker.random().nextInt(100)];
         eventExample.setField4(field4);
         eventExample.setField5(new ArrayList<>());
         eventExample.setField6(null);

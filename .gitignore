@@ -5,3 +5,4 @@ bauer-core/target/test-classes
 bauer-stream/target/
 target/
 */target/
+dependency-reduced-pom.xml

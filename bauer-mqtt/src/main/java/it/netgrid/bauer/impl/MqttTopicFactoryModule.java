@@ -26,6 +26,7 @@ public class MqttTopicFactoryModule extends AbstractModule {
         bind(Properties.class).toInstance(this.p);
         bind(ITopicFactory.class).to(MqttTopicFactory.class).in(Singleton.class);
         bind(MqttConfigProvider.class).to(MqttConfigFromPropertiesProvider.class);
+        bind(MqttClientManager.class).to(ThreadedMqttClientManager.class).in(Singleton.class);
     }
 
     @Provides
@@ -42,11 +43,5 @@ public class MqttTopicFactoryModule extends AbstractModule {
     @Singleton
     public MqttClient buildMqttClient(MqttConfigProvider config) throws MqttException {
         return new MqttClient(config.config().url(), config.config().clientId());
-    }
-
-    @Provides
-    @Singleton
-    public MqttClientManager buildClientManager(MqttClient client) {
-        return new ThreadedMqttClientManager(client);
     }
 }

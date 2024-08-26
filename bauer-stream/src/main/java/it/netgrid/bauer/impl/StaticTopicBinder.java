@@ -34,7 +34,7 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = StreamTopicFactory.class.getName();
 
-    private static final StreamConfigProvider config = new StreamConfigFromPropertiesProvider(TopicFactory.getProperties());
+    private static final StreamConfigProvider cp = new StreamConfigFromPropertiesProvider(TopicFactory.getProperties());
 
 
     /**
@@ -44,8 +44,8 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     private final ITopicFactory topicFactory;
 
     private StaticTopicBinder() {
-        StreamManager manager = new StreamThreadedManager(config.get(), new PosixStreamsProvider());
-    	StreamMessageFactory factory = new SimpleStreamMessageFactory(config.get());
+        StreamManager manager = new StreamThreadedManager(cp.config(), new PosixStreamsProvider());
+    	StreamMessageFactory factory = new SimpleStreamMessageFactory(cp.config());
         topicFactory = new StreamTopicFactory(manager, factory);
     }
 

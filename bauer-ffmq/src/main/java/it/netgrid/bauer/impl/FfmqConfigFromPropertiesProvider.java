@@ -4,18 +4,9 @@ import java.util.Properties;
 
 import com.google.inject.Inject;
 
+import it.netgrid.bauer.impl.impl.FfmqConfigImpl;
+
 public class FfmqConfigFromPropertiesProvider implements FfmqConfigProvider {
-
-    public static final String PROVIDER_URL_PROP = "ffmqProvider";
-    public static final String MESSAGE_HANDLER_RETRY_RATE_PROP = "messageHandlerRetry";
-    public static final String MESSAGE_HANDLER_MAX_RETRY_PROP = "messageHandlerMaxRetry";
-
-    public static final String DEFAULT_PROVIDER_URL = "tcp://localhost:10002";
-    public static final String DEFAULT_MESSAGE_HANDLER_RETRY_RATE = "2000";
-    public static final String DEFAULT_MESSAGE_HANDLER_MAX_RETRY = "10";
-
-    private static final String TOPIC_USERNAME_NAME_FORMAT = "topic.%s.username";
-    private static final String TOPIC_PASSWORD_NAME_FORMAT = "topic.%s.password";
 
     private FfmqConfig config;
     private final Properties p;
@@ -26,13 +17,15 @@ public class FfmqConfigFromPropertiesProvider implements FfmqConfigProvider {
     }
 
     @Override
-    public FfmqConfig get() {
+    public FfmqConfig config() {
         if (config != null) {
-            String providerUrl = p.getProperty(PROVIDER_URL_PROP, DEFAULT_PROVIDER_URL);
-            String retryRate = p.getProperty(MESSAGE_HANDLER_RETRY_RATE_PROP, DEFAULT_MESSAGE_HANDLER_RETRY_RATE);
-            String maxRetry = p.getProperty(MESSAGE_HANDLER_MAX_RETRY_PROP, DEFAULT_MESSAGE_HANDLER_MAX_RETRY);
-            this.config = new FfmqConfig(providerUrl, Integer.parseInt(retryRate), Integer.parseInt(maxRetry),
-                    TOPIC_USERNAME_NAME_FORMAT, TOPIC_PASSWORD_NAME_FORMAT);
+            String providerUrl = p.getProperty(FfmqConfig.FFMQ_PROVIDER_URL, FfmqConfig.FFMQ_PROVIDER_URL_DEFAULT);
+            String retryRate = p.getProperty(FfmqConfig.FFMQ_MESSAGE_HANDLER_RETRY_RATE, FfmqConfig.FFMQ_MESSAGE_HANDLER_RETRY_RATE_DEFAULT);
+            String maxRetry = p.getProperty(FfmqConfig.FFMQ_MESSAGE_HANDLER_MAX_RETRY, FfmqConfig.FFMQ_MESSAGE_HANDLER_MAX_RETRY_DEFAULT);
+            String topicUsernameFormat = p.getProperty(FfmqConfig.FFMQ_TOPIC_USERNAME_NAME_FORMAT, FfmqConfig.FFMQ_TOPIC_USERNAME_NAME_FORMAT_DEFAULT);
+            String topicPasswordFormat = p.getProperty(FfmqConfig.FFMQ_TOPIC_PASSWORD_NAME_FORMAT, FfmqConfig.FFMQ_TOPIC_PASSWORD_NAME_FORMAT_DEFAULT);
+            this.config = new FfmqConfigImpl(providerUrl, Integer.parseInt(retryRate), Integer.parseInt(maxRetry),
+            topicUsernameFormat, topicPasswordFormat);
         }
 
         return config;

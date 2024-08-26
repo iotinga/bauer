@@ -28,6 +28,7 @@
 		<version.junit>5.9.2</version.junit>
         <version.mockito>5.12.0</version.mockito>
         <version.javafaker>1.0.2</version.javafaker>
+        <version.jackson>2.17.1</version.jackson>   
 	</properties>
 
 	<repositories>
@@ -50,6 +51,12 @@
 			<artifactId>gson</artifactId>
 			<version>${version.gson}</version>
 		</dependency>
+
+        <dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.timewalker.ffmq/ffmq3-core -->
 		<dependency>

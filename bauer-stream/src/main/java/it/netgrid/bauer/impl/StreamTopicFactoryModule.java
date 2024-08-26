@@ -34,6 +34,6 @@ public class StreamTopicFactoryModule extends AbstractModule {
 
     @Provides
     public StreamConfig buildStreamConfig(StreamConfigProvider provider) {
-        return provider.get();
+        return provider.config();
     }
 }

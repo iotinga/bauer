@@ -1,39 +1,55 @@
 package it.netgrid.bauer.impl;
 
-import javax.net.ssl.SSLSocketFactory;
-
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 
 import it.netgrid.bauer.impl.impl.CBORMqttMessageFactory;
-import it.netgrid.bauer.impl.impl.JSONMqttMessageFactory;
 
-public record MqttConfig(String clientId, String messageContentType, String url, String user, String password, int reconnectMinDelay, int reconnectMaxDelay, boolean isCleanStart, int connectionTimeout, int keepAliveInterval) {
+public interface MqttConfig {
 
-    MqttConnectionOptions asConnectionOptions() {
-        MqttConnectionOptions retval = new MqttConnectionOptions();
-        retval.setAutomaticReconnect(true);
+    public static final String MQTT_CLIENT_ID = "mqtt_client_id";
+    public static final String MQTT_MESSAGE_CONTENT_TYPE = "mqtt_content_type";
+    public static final String MQTT_URL = "mqtt_broker_url";
+    public static final String MQTT_USER = "mqtt_username";
+    public static final String MQTT_PASS = "mqtt_password";
+    public static final String MQTT_RECONN_MIN_DELAY = "mqtt_reconn_min_delay";
+    public static final String MQTT_RECONN_MAX_DELAY = "mqtt_reconn_max_delay";
+    public static final String MQTT_CLEAN_START = "mqtt_clean_start";
+    public static final String MQTT_CONN_TIMEOUT = "mqtt_conn_timeout";
+    public static final String MQTT_KEEP_ALIVE_INTERVAL = "mqtt_keep_alive_interval";
 
-        retval.setAutomaticReconnectDelay(this.reconnectMinDelay(), this.reconnectMaxDelay());
-        retval.setCleanStart(this.isCleanStart());
-        retval.setConnectionTimeout(this.connectionTimeout());
-        retval.setKeepAliveInterval(this.keepAliveInterval());
-        String username = this.user();
-        byte[] password = this.password().getBytes();
-        if (username.length() > 0 && password.length > 0) {
-            retval.setUserName(username);
-            retval.setPassword(password);
-        }
-        if (this.url().startsWith("ssl")) {
-            retval.setSocketFactory(SSLSocketFactory.getDefault());
-        }
-        return retval;
-    }
+    public static final String MQTT_CLIENT_ID_DEFAULT = "bauer";
+    public static final String MQTT_MESSAGE_CONTENT_TYPE_DEFAULT = CBORMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE;
+    public static final String MQTT_URL_DEFAULT = "tcp://localhost:1883";
+    public static final String MQTT_USER_DEFAULT = "";
+    public static final String MQTT_PASS_DEFAULT = "";
+    public static final String MQTT_RECONN_MIN_DELAY_DEFAULT = "1";
+    public static final String MQTT_RECONN_MAX_DELAY_DEFAULT = "10";
+    public static final String MQTT_CLEAN_START_DEFAULT = "1";
+    public static final String MQTT_CONN_TIMEOUT_DEFAULT = "15";
+    public static final String MQTT_KEEP_ALIVE_INTERVAL_DEFAULT = "10";
 
-    MqttMessageFactory getMessageFactory() {
-        if (this.messageContentType() == JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE) {
-            return new JSONMqttMessageFactory();
-        } else {
-            return new CBORMqttMessageFactory();
-        }
-    }
+    String clientId();
+
+    String messageContentType();
+
+    String url();
+
+    String user();
+
+    String password();
+
+    int reconnectMinDelay();
+
+    int reconnectMaxDelay();
+
+    boolean isCleanStart();
+
+    int connectionTimeout();
+
+    int keepAliveInterval();
+
+    MqttConnectionOptions asConnectionOptions();
+
+    MqttMessageFactory getMessageFactory();
+
 }

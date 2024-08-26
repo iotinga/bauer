@@ -30,18 +30,18 @@ public class MqttTopicFactoryModule extends AbstractModule {
 
     @Provides
     public MqttConfig buildStreamConfig(MqttConfigProvider config) {
-        return config.get();
+        return config.config();
     }
 
     @Provides
     public MqttMessageFactory buildMessageFactory(MqttConfigProvider config) {
-        return config.get().getMessageFactory();
+        return config.config().getMessageFactory();
     }
 
     @Provides
     @Singleton
     public MqttClient buildMqttClient(MqttConfigProvider config) throws MqttException {
-        return new MqttClient(config.get().url(), config.get().clientId());
+        return new MqttClient(config.config().url(), config.config().clientId());
     }
 
     @Provides

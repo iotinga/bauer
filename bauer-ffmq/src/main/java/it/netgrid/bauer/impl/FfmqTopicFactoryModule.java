@@ -24,6 +24,6 @@ public class FfmqTopicFactoryModule extends AbstractModule {
 
     @Provides
     public FfmqConfig buildStreamConfig(FfmqConfigProvider provider) {
-        return provider.get();
+        return provider.config();
     }
 }

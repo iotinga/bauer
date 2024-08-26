@@ -10,13 +10,14 @@ import com.github.javafaker.Faker;
 
 import it.netgrid.bauer.impl.impl.CBORMqttMessageFactory;
 import it.netgrid.bauer.impl.impl.JSONMqttMessageFactory;
+import it.netgrid.bauer.impl.impl.MqttConfigImpl;
 
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 
 public class MqttConfigTest {
 
     private Faker faker;
-    private MqttConfig config;
+    private MqttConfigImpl config;
 
     @BeforeEach
     public void setUp() {
@@ -26,7 +27,7 @@ public class MqttConfigTest {
 
     @Test
     public void buildConnectionOptionsTest() {
-        config = new MqttConfig(faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
+        config = new MqttConfigImpl(faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
                 faker.lorem().word(), faker.lorem().word(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000), faker.random().nextBoolean(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000));
@@ -44,7 +45,7 @@ public class MqttConfigTest {
 
     @Test
     public void getMessageFactoryCBORAsDefaultTest() {
-        config = new MqttConfig(faker.lorem().word(), null, faker.lorem().word(),
+        config = new MqttConfigImpl(faker.lorem().word(), null, faker.lorem().word(),
                 faker.lorem().word(), faker.lorem().word(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000), faker.random().nextBoolean(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000));
@@ -54,7 +55,7 @@ public class MqttConfigTest {
 
     @Test
     public void getMessageFactoryCBOROnUnknownTest() {
-        config = new MqttConfig(faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
+        config = new MqttConfigImpl(faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
                 faker.lorem().word(), faker.lorem().word(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000), faker.random().nextBoolean(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000));
@@ -64,7 +65,7 @@ public class MqttConfigTest {
 
     @Test
     public void getMessageFactoryJSONAsRequiredTest() {
-        config = new MqttConfig(faker.lorem().word(), JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE, faker.lorem().word(),
+        config = new MqttConfigImpl(faker.lorem().word(), JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE, faker.lorem().word(),
                 faker.lorem().word(), faker.lorem().word(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000), faker.random().nextBoolean(), faker.random().nextInt(0, 1000),
                 faker.random().nextInt(0, 1000));

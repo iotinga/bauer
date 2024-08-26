@@ -1,5 +1,5 @@
 package it.netgrid.bauer.impl;
 
 public interface MqttConfigProvider {
-    public MqttConfig get();
+    public MqttConfig config();
 }

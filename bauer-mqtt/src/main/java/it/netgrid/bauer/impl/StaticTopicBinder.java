@@ -41,7 +41,7 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = MqttTopicFactory.class.getName();
 
-    private static final MqttConfigProvider config = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
+    private static final MqttConfigProvider cp = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
 
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
@@ -52,15 +52,15 @@ public class StaticTopicBinder implements TopicFactoyBinder {
     private StaticTopicBinder() {
         try {
             // Build client and manager for mqtt connection handling
-            MqttClient client = new MqttClient(config.get().url(), config.get().clientId());
+            MqttClient client = new MqttClient(cp.config().url(), cp.config().clientId());
             MqttClientManager mqttClientManager = new ThreadedMqttClientManager(client);
 
             // Build topic factory
-            MqttMessageFactory messageFactory = config.get().getMessageFactory();
+            MqttMessageFactory messageFactory = cp.config().getMessageFactory();
             topicFactory = new MqttTopicFactory(mqttClientManager, messageFactory);
 
             // Open MQTT connection
-            mqttClientManager.connect(config.get().asConnectionOptions());
+            mqttClientManager.connect(cp.config().asConnectionOptions());
         } catch (MqttException e) {
             log.error(String.format("Unable to init MQTT Client: %s", e.getMessage()));
         } catch (IOException e) {

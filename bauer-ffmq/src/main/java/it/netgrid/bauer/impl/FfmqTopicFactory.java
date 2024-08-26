@@ -42,13 +42,13 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 
-	private final FfmqConfigProvider config;
+	private final FfmqConfigProvider cp;
 	private Context context;
 	private TopicConnectionFactory connFactory;
 
 	@Inject
 	public FfmqTopicFactory(FfmqConfigProvider provider) {
-		this.config = provider;
+		this.cp = provider;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 			// Create and initialize a JNDI context
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, FFMQConstants.JNDI_CONTEXT_FACTORY);
-			env.put(Context.PROVIDER_URL, this.config.get().providerUrl());
+			env.put(Context.PROVIDER_URL, this.cp.config().providerUrl());
 
 			try {
 				context = new InitialContext(env);
@@ -174,11 +174,11 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 	public int getHandlerMaxRetry() {
-		return this.config.get().messageHandlerMaxRetry();
+		return this.cp.config().messageHandlerMaxRetry();
 	}
 
 	public int getHandlerRetryRate() {
-		return this.config.get().messageHandlerRetryRate();
+		return this.cp.config().messageHandlerRetryRate();
 	}
 
 	private String getUsername(String topicName) {
@@ -190,11 +190,11 @@ public class FfmqTopicFactory implements ITopicFactory, ExceptionListener {
 	}
 
 	private String getUsernamePropertyName(String topicName) {
-		return String.format(this.config.get().topicUsernameFormat(), topicName);
+		return String.format(this.cp.config().topicUsernameFormat(), topicName);
 	}
 
 	private String getPasswordPropertyName(String topicName) {
-		return String.format(this.config.get().topicPasswordFormat(), topicName);
+		return String.format(this.cp.config().topicPasswordFormat(), topicName);
 	}
 
 	public <E> E getEvent(TextMessage message, Class<E> eventClass) throws JMSException {

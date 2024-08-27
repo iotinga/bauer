@@ -3,6 +3,7 @@ package it.netgrid.bauer.impl;
 import java.util.Properties;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import it.netgrid.bauer.ITopicFactory;
@@ -19,5 +20,10 @@ public class FfmqTopicFactoryModule extends AbstractModule {
         bind(Properties.class).toInstance(this.p);
         bind(ITopicFactory.class).to(FfmqTopicFactory.class).in(Singleton.class);
         bind(FfmqConfigProvider.class).to(FfmqConfigFromPropertiesProvider.class);
+    }
+
+    @Provides
+    public FfmqConfig buildStreamConfig(FfmqConfigProvider provider) {
+        return provider.config();
     }
 }

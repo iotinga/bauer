@@ -25,6 +25,7 @@ public class MqttTopicFactory implements ITopicFactory {
         this.topics = new HashMap<>();
         this.messageFactory = messageFactory;
         this.manager = manager;
+        this.manager.safeFirstConnection();
     }
 
     @Override

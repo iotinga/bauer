@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 import it.netgrid.bauer.EventHandler;
 import it.netgrid.bauer.impl.EventExample;
+import it.netgrid.bauer.impl.MqttConfig;
 import it.netgrid.bauer.impl.MqttMessageConsumer;
 import it.netgrid.bauer.impl.MqttMessageFactory;
 import it.netgrid.bauer.impl.MqttTopic;
@@ -36,6 +37,8 @@ public class ThreadedMqttClientManagerTest {
     private MqttMessageConsumer retainedConsumer;
     @Mock
     private MqttClient client;
+    @Mock
+    private MqttConfig config;
 
     private Faker faker;
     private String topic;
@@ -55,7 +58,7 @@ public class ThreadedMqttClientManagerTest {
         this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
         this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
         emptyMessage = new MqttMessage();
-        this.testee = new ThreadedMqttClientManager(client);
+        this.testee = new ThreadedMqttClientManager(client, this.config);
         this.subscription = new MqttSubscription(this.topic);
         this.sharedSubscription = new MqttSubscription(this.sharedTopic);
         this.retainedSubscription = new MqttSubscription(this.topic);

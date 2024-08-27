@@ -13,7 +13,7 @@ import it.netgrid.bauer.impl.impl.StreamConfigFromPropertiesProvider;
 import it.netgrid.bauer.impl.impl.StreamThreadedManager;
 
 public class StaticTopicBinder implements TopicFactoyBinder {
-	
+
 	private static final StaticTopicBinder SINGLETON = new StaticTopicBinder();
 
     /**
@@ -34,22 +34,21 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = StreamTopicFactory.class.getName();
 
-    private static final StreamConfigProvider cp = new StreamConfigFromPropertiesProvider(TopicFactory.getProperties());
-
-
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
      */
-    private final ITopicFactory topicFactory;
+    private ITopicFactory topicFactory;
 
-    private StaticTopicBinder() {
-        StreamManager manager = new StreamThreadedManager(cp.config(), new PosixStreamsProvider());
-    	StreamMessageFactory factory = new SimpleStreamMessageFactory(cp.config());
-        topicFactory = new StreamTopicFactory(manager, factory);
-    }
+    private StaticTopicBinder() {}
 
     public ITopicFactory getTopicFactory() {
+        if(topicFactory == null) {
+            StreamConfigProvider cp = new StreamConfigFromPropertiesProvider(TopicFactory.getProperties());
+            StreamManager manager = new StreamThreadedManager(cp.config(), new PosixStreamsProvider());
+            StreamMessageFactory factory = new SimpleStreamMessageFactory(cp.config());
+            topicFactory = new StreamTopicFactory(manager, factory);
+        }
         return topicFactory;
     }
 

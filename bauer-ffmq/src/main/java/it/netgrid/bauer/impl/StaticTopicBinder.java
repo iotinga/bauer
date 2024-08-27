@@ -34,14 +34,15 @@ public class StaticTopicBinder implements TopicFactoyBinder {
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
      */
-    private final ITopicFactory topicFactory;
+    private ITopicFactory topicFactory;
 
-    private StaticTopicBinder() {
-        FfmqConfigFromPropertiesProvider provider = new FfmqConfigFromPropertiesProvider(TopicFactory.getProperties());
-    	topicFactory = new FfmqTopicFactory(provider);
-    }
+    private StaticTopicBinder() {}
 
     public ITopicFactory getTopicFactory() {
+        if(topicFactory == null) {
+            FfmqConfigFromPropertiesProvider provider = new FfmqConfigFromPropertiesProvider(TopicFactory.getProperties());
+            topicFactory = new FfmqTopicFactory(provider);
+        }
         return topicFactory;
     }
 

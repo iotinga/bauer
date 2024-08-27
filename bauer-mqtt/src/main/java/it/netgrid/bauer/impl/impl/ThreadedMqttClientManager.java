@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 
 import it.netgrid.bauer.impl.MqttClientManager;
+import it.netgrid.bauer.impl.MqttConfig;
 import it.netgrid.bauer.impl.MqttMessageConsumer;
 
 public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
@@ -49,17 +50,19 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
     private final LinkedBlockingQueue<MqttSubscription> pendingSubscriptions;
     private final List<MqttSubscription> activeSubscriptions;
 
+    private final MqttConfig config;
     private final MqttClient client;
     private final ExecutorService executor;
     private final Map<MqttMessageConsumer, Future<?>> consumers = new HashMap<>();
 
     private Future<?> subscribeTask;
 
-    private Future<?> connectTask;
+    private Future<?> firstConnectionTask;
 
     @Inject
-    public ThreadedMqttClientManager(MqttClient client) {
+    public ThreadedMqttClientManager(MqttClient client, MqttConfig config) {
         this.client = client;
+        this.config = config;
         this.client.setCallback(this);
         this.activeSubscriptions = new ArrayList<>();
         this.pendingSubscriptions = new LinkedBlockingQueue<>();
@@ -204,13 +207,24 @@ public class ThreadedMqttClientManager implements MqttClientManager, Runnable {
     }
 
     @Override
-    public boolean connectCompleted() {
-        return this.connectTask.isDone();
+    public boolean isFirstConnectionCompleted() {
+        return this.firstConnectionTask == null ? false : this.firstConnectionTask.isDone();
     }
 
     @Override
-    public void connect(final MqttConnectionOptions options) throws IOException {
-        this.connectTask = this.executor.submit(new Runnable() {
+    public void safeFirstConnection() {
+        try{
+            connect(this.config.asConnectionOptions());
+        } catch(IOException e) {
+            log.error(String.format("connection error: %s", e.getMessage()));
+        }
+    }
+
+    public synchronized void connect(final MqttConnectionOptions options) throws IOException {
+        if(this.firstConnectionTask != null) {
+            return;
+        }
+        this.firstConnectionTask = this.executor.submit(new Runnable() {
 
             @Override
             public void run() {

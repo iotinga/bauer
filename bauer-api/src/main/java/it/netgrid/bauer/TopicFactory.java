@@ -86,8 +86,8 @@ public final class TopicFactory {
         return configPropertiesPath;
     }
 
-    private final static void performInitialization() {
-        bind();
+    private final static void performInitialization(boolean asModule) {
+        bind(asModule);
         if (INITIALIZATION_STATE == SUCCESSFUL_INITIALIZATION) {
             versionSanityCheck();
         }
@@ -103,7 +103,7 @@ public final class TopicFactory {
         return false;
     }
 
-    private final static void bind() {
+    private final static void bind(boolean asModule) {
         try {
             Set<URL> staticTopicBinderPathSet = null;
             // skip check under android, see also
@@ -237,7 +237,7 @@ public final class TopicFactory {
             synchronized (TopicFactory.class) {
                 if (INITIALIZATION_STATE == UNINITIALIZED) {
                     INITIALIZATION_STATE = ONGOING_INITIALIZATION;
-                    performInitialization();
+                    performInitialization(false);
                 }
             }
         }
@@ -262,7 +262,7 @@ public final class TopicFactory {
                 switch (INITIALIZATION_STATE) {
                     case UNINITIALIZED:
                         INITIALIZATION_STATE = ONGOING_INITIALIZATION;
-                        performInitialization();
+                        performInitialization(true);
                         break;
                     case SUCCESSFUL_INITIALIZATION:
                         FACTORY_MODULE

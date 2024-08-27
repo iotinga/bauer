@@ -1,7 +1,5 @@
 package it.netgrid.bauer.impl;
 
-import java.io.IOException;
-
 import org.eclipse.paho.mqttv5.client.MqttClient;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.slf4j.Logger;
@@ -41,7 +39,6 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = MqttTopicFactory.class.getName();
 
-    private static final MqttConfigProvider cp = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
 
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
@@ -49,26 +46,27 @@ public class StaticTopicBinder implements TopicFactoyBinder {
      */
     private ITopicFactory topicFactory;
 
-    private StaticTopicBinder() {
-        try {
-            // Build client and manager for mqtt connection handling
-            MqttClient client = new MqttClient(cp.config().url(), cp.config().clientId());
-            MqttClientManager mqttClientManager = new ThreadedMqttClientManager(client);
-
-            // Build topic factory
-            MqttMessageFactory messageFactory = cp.config().getMessageFactory();
-            topicFactory = new MqttTopicFactory(mqttClientManager, messageFactory);
-
-            // Open MQTT connection
-            mqttClientManager.connect(cp.config().asConnectionOptions());
-        } catch (MqttException e) {
-            log.error(String.format("Unable to init MQTT Client: %s", e.getMessage()));
-        } catch (IOException e) {
-            log.error(String.format("Unable to connect: %s", e.getMessage()));
-        }
-    }
+    private StaticTopicBinder() {}
 
     public ITopicFactory getTopicFactory() {
+        if(topicFactory == null) {
+            MqttConfigFromPropertiesProvider cp = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
+
+            try {
+                // Build client and manager for mqtt connection handling
+                MqttClient client = new MqttClient(cp.config().url(), cp.config().clientId());
+                MqttClientManager mqttClientManager = new ThreadedMqttClientManager(client, cp.config());
+    
+                // Build topic factory
+                MqttMessageFactory messageFactory = cp.config().getMessageFactory();
+                topicFactory = new MqttTopicFactory(mqttClientManager, messageFactory);
+    
+                // Open MQTT connection
+                mqttClientManager.safeFirstConnection();
+            } catch (MqttException e) {
+                log.error(String.format("Unable to init MQTT Client: %s", e.getMessage()));
+            }
+        }
         return topicFactory;
     }
 

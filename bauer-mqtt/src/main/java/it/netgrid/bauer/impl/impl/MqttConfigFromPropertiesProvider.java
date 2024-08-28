@@ -20,7 +20,7 @@ public class MqttConfigFromPropertiesProvider implements MqttConfigProvider {
 
     @Override
     public MqttConfig config() {
-        if (config != null) {
+        if (config == null) {
             String clientId = p.getProperty(MqttConfig.MQTT_CLIENT_ID,
                     MqttConfig.MQTT_CLIENT_ID_DEFAULT);
             String contentType = p.getProperty(MqttConfig.MQTT_MESSAGE_CONTENT_TYPE,

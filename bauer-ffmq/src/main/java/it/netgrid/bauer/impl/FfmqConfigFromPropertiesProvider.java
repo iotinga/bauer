@@ -18,7 +18,7 @@ public class FfmqConfigFromPropertiesProvider implements FfmqConfigProvider {
 
     @Override
     public FfmqConfig config() {
-        if (config != null) {
+        if (config == null) {
             String providerUrl = p.getProperty(FfmqConfig.FFMQ_PROVIDER_URL, FfmqConfig.FFMQ_PROVIDER_URL_DEFAULT);
             String retryRate = p.getProperty(FfmqConfig.FFMQ_MESSAGE_HANDLER_RETRY_RATE, FfmqConfig.FFMQ_MESSAGE_HANDLER_RETRY_RATE_DEFAULT);
             String maxRetry = p.getProperty(FfmqConfig.FFMQ_MESSAGE_HANDLER_MAX_RETRY, FfmqConfig.FFMQ_MESSAGE_HANDLER_MAX_RETRY_DEFAULT);

@@ -20,7 +20,7 @@ public class StreamConfigFromPropertiesProvider implements StreamConfigProvider 
 
     @Override
     public StreamConfig config() {
-        if (config != null) {
+        if (config == null) {
             String topicAttribute = p.getProperty(StreamConfig.STREAM_TOPIC_ATTRIBUTE,
                     StreamConfig.STREAM_TOPIC_ATTRIBUTE_DEFAULT);
             String payloadAttribute = p.getProperty(StreamConfig.STREAM_PAYLOAD_ATTRIBUTE,

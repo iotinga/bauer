@@ -48,11 +48,17 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
     public void run() {
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                Nullable event = incomingEvents.take();
-                this.handler.handle(event.topic, event.payload);
+                try {
+                    Nullable event = incomingEvents.take();
+                    this.handler.handle(event.topic, event.payload);
+                } catch (InterruptedException e) {
+                }
             }
         } catch (Exception e) {
-            log.warn(String.format("%s handler: %s", mqttPattern, e.getMessage()));
+            log.error(String.format("%s handler %s: %s", mqttPattern, e.getClass().getName(), e.getMessage()));
+            for (StackTraceElement item : e.getStackTrace()) {
+                log.error(String.format("\t%s", item));
+            }
         }
     }
 
@@ -63,6 +69,12 @@ public class SimpleMqttMessageConsumer<E> implements MqttMessageConsumer {
                 E event = this.factory.getEvent(message, this.handler.getEventClass());
                 this.incomingEvents.put(new Nullable(topic, event));
             } catch (Exception e) {
+                String debugString = message == null ? "[NULL]" : message.toDebugString();
+                log.error(String.format("%s\n%s\nconsuming: %s: %s", topic, debugString, e.getClass().getName(),
+                        e.getMessage()));
+                for (StackTraceElement item : e.getStackTrace()) {
+                    log.error(String.format("\t%s", item));
+                }
                 throw new IOException(e);
             }
             return true;

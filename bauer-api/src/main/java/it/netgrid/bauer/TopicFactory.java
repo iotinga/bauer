@@ -65,8 +65,6 @@ public final class TopicFactory {
 
     private static Properties properties;
 
-    private static CompletableFuture<Module> FACTORY_MODULE;
-
     private TopicFactory() {
     }
 
@@ -255,33 +253,36 @@ public final class TopicFactory {
         throw new IllegalStateException("Unreachable code");
     }
 
-    public static Module getAsModule(Properties properties) {
-        if (FACTORY_MODULE == null) {
-            FACTORY_MODULE = new CompletableFuture<>();
-            while (!FACTORY_MODULE.isDone()) {
-                switch (INITIALIZATION_STATE) {
-                    case UNINITIALIZED:
-                        INITIALIZATION_STATE = ONGOING_INITIALIZATION;
-                        performInitialization(true);
-                        break;
-                    case SUCCESSFUL_INITIALIZATION:
-                        FACTORY_MODULE
-                                .complete(StaticTopicBinder.getSingleton().getTopicFactoryAsModule(properties));
-                    case NOP_FALLBACK_INITIALIZATION:
-                        FACTORY_MODULE.complete(NOP_FALLBACK_MODULE);
-                    case FAILED_INITIALIZATION:
-                        FACTORY_MODULE
-                                .completeExceptionally(new IllegalStateException("Failed Bauer initialization"));
-                    case ONGOING_INITIALIZATION:
-                        try {
-                            Thread.sleep(INIT_RETRIES_TIMEOUT_MILLIS);
-                        } catch (InterruptedException e) {
-                            FACTORY_MODULE.completeExceptionally(e);
-                        }
-                }
+    private static boolean isInitializationDone() {
+        return INITIALIZATION_STATE == SUCCESSFUL_INITIALIZATION || INITIALIZATION_STATE == NOP_FALLBACK_INITIALIZATION
+                || INITIALIZATION_STATE == FAILED_INITIALIZATION;
+    }
+
+    public static synchronized Module getAsModule(Properties properties) {
+        while (!isInitializationDone()) {
+            switch (INITIALIZATION_STATE) {
+                case UNINITIALIZED:
+                    INITIALIZATION_STATE = ONGOING_INITIALIZATION;
+                    performInitialization(true);
+                    break;
+                case ONGOING_INITIALIZATION:
+                    try {
+                        Thread.sleep(INIT_RETRIES_TIMEOUT_MILLIS);
+                    } catch (InterruptedException e) {
+                        INITIALIZATION_STATE = FAILED_INITIALIZATION;
+                    }
             }
         }
-        return FACTORY_MODULE.join();
+
+        switch (INITIALIZATION_STATE) {
+            case SUCCESSFUL_INITIALIZATION:
+                return StaticTopicBinder.getSingleton().getTopicFactoryAsModule(properties);
+            case NOP_FALLBACK_INITIALIZATION:
+                return NOP_FALLBACK_MODULE;
+            case FAILED_INITIALIZATION:
+            default:
+                throw new IllegalStateException("Failed Bauer initialization");
+        }
     }
 
     private static void replayEvents() {

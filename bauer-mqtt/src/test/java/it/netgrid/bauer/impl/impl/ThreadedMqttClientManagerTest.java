@@ -49,14 +49,16 @@ public class ThreadedMqttClientManagerTest {
     private MqttSubscription retainedSubscription;
     private MqttMessage emptyMessage;
     private ThreadedMqttClientManager testee;
-    
+
     @BeforeEach
     public void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
         this.faker = new Faker();
         this.topic = this.faker.lorem().word();
-        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
-        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR, this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.retainedTopic = String.format("%s%s%s%s%s", MqttTopic.RETAIN_MESSAGES_PREFIX, MqttTopic.PATH_SEPARATOR,
+                this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
+        this.sharedTopic = String.format("%s%s%s%s%s", MqttTopic.SHARED_SUBSCRIPTION_PREFIX, MqttTopic.PATH_SEPARATOR,
+                this.faker.lorem().word(), MqttTopic.PATH_SEPARATOR, this.topic);
         emptyMessage = new MqttMessage();
         this.testee = new ThreadedMqttClientManager(client, this.config);
         this.subscription = new MqttSubscription(this.topic);

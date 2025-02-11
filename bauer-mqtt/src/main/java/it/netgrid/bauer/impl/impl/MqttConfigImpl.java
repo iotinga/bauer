@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.netgrid.bauer.impl.MqttConfig;
 import it.netgrid.bauer.impl.MqttMessageFactory;
 
+import java.util.Objects;
+
 public class MqttConfigImpl implements MqttConfig {
 
     @JsonProperty(MqttConfig.MQTT_CLIENT_ID)
@@ -118,7 +120,7 @@ public class MqttConfigImpl implements MqttConfig {
     }
 
     public MqttMessageFactory getMessageFactory() {
-        if (this.messageContentType() == JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE) {
+        if (JSONMqttMessageFactory.MQTT_MESSAGE_CONTENT_TYPE.equals(this.messageContentType())) {
             return new JSONMqttMessageFactory();
         } else {
             return new CBORMqttMessageFactory();

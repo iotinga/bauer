@@ -24,7 +24,7 @@ public class SimpleStreamMessageFactory implements StreamMessageFactory {
 
     @Inject
     public SimpleStreamMessageFactory(StreamConfig config) {
-        this.om = new ObjectMapper();
+        this.om = new ObjectMapper().findAndRegisterModules();
         this.config = config;
     }
 

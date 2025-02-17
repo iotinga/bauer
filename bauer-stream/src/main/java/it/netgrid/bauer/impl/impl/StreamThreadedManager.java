@@ -40,7 +40,7 @@ public class StreamThreadedManager implements StreamManager {
     public StreamThreadedManager(StreamConfig config, StreamsProvider provider) {
         this.config = config;
         this.cf = new CBORFactory();
-        this.om = new ObjectMapper(this.cf);
+        this.om = new ObjectMapper(this.cf).findAndRegisterModules();
         this.executor = Executors.newFixedThreadPool(2);
         this.consumers = new ArrayList<>();
         this.streams = provider;

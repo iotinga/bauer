@@ -27,6 +27,7 @@ public class JSONMqttMessageFactory implements MqttMessageFactory {
 
     public JSONMqttMessageFactory() {
         this.jm = new JsonMapper();
+        this.jm.findAndRegisterModules();
         this.om = new ObjectMapper(new JsonFactory()).findAndRegisterModules();
         this.mqttProperties = new MqttProperties();
         this.mqttProperties.setContentType(MQTT_MESSAGE_CONTENT_TYPE);

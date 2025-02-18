@@ -27,6 +27,7 @@ public class CBORMqttMessageFactory implements MqttMessageFactory {
 
     public CBORMqttMessageFactory() {
         this.cm = new CBORMapper();
+        this.cm.findAndRegisterModules();
         this.om = new ObjectMapper(new CBORFactory()).findAndRegisterModules();
         this.mqttProperties = new MqttProperties();
         this.mqttProperties.setContentType(MQTT_MESSAGE_CONTENT_TYPE);

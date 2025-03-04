@@ -91,6 +91,13 @@
             <version>${version.javafaker}</version>
             <scope>test</scope>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-jndi -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jndi</artifactId>
+			<version>12.0.16</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>

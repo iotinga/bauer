@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.netgrid</groupId>
 	<artifactId>bauer</artifactId>
-	<version>1.1.9</version>
+	<version>1.1.10</version>
 	<packaging>pom</packaging>
 	<name>Bauer</name>
 	<description>Standard Topic-Based Messaging Facade for Java</description>

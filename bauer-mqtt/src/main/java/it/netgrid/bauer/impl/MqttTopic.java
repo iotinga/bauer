@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,11 @@ public class MqttTopic<E> implements Topic<E> {
     }
 
     @Override
+    public void removeHandler(EventHandler<E> handler) {
+        handlers.remove(handler);
+    }
+
+    @Override
     public void post(E event) {
         MqttMessage message;
         try {
@@ -73,5 +79,4 @@ public class MqttTopic<E> implements Topic<E> {
             log.error(String.format("Unable to post %s %s", this.mqttPattern, e));
         }
     }
-
 }

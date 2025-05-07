@@ -28,7 +28,12 @@ public class EventRecordingTopic<E> implements Topic<E> {
 		this.eventQueue.add(qEvent);
 	}
 
-	@Override
+    @Override
+    public void removeHandler(EventHandler<E> handler) {
+        throw new RuntimeException("Not Implemented");
+    }
+
+    @Override
 	public void post(E event) {
 		SubstituteTopicEvent qEvent = new SubstituteTopicEvent(topic, Action.POST, event, null);
 		this.eventQueue.add(qEvent);

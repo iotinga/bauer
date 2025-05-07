@@ -46,6 +46,14 @@ public class StreamTopic<E> implements Topic<E>, StreamMessageConsumer {
     }
 
     @Override
+    public synchronized void removeHandler(EventHandler<E> handler) {
+        this.handlers.remove(handler);
+        if (this.handlers.isEmpty()) {
+            log.warn("Should probably do something with the stream manager when there are no handlers");
+        }
+    }
+
+    @Override
     public void post(E event) {
         try {
             StreamEvent<E> streamEvent = new StreamEvent<E>(name, event);

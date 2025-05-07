@@ -56,6 +56,11 @@ public class FfmqTopic<E> implements Topic<E> {
 	}
 
 	@Override
+	public void removeHandler(EventHandler<E> handler) {
+		subscribers.remove(handler.getName());
+	}
+
+	@Override
 	public void post(E event) {
 		if (event == null)
 			return;

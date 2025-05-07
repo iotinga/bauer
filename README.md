@@ -16,16 +16,14 @@ Bauer has been written with esteem and respect for slf4j, the world famous Simpl
 
 ### Bauer send event sample ###
 
-```
-#!java
+``` java
 Topic<MyCustomPayload> myCustomTopic = TopicFactory.getTopic("/my/topic/path");
 myCustomTopic.post(new MyCustomPayload("Hello World"));
 ```
 
 ### Bauer event handler sample ###
 
-```
-#!java
+``` java
 Topic<MyCustomPayload> myCustomTopic = TopicFactory.getTopic("/my/topic/path");
 myCustomTopic.addHandler(new EventHandler<MyCustomPayload>() {
 

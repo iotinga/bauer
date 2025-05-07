@@ -40,6 +40,11 @@ public class SubstituteTopic<E> implements Topic<E> {
 		}
 	}
 
+    @Override
+    public synchronized void removeHandler(EventHandler<E> handler) {
+        delegate().removeHandler(handler);
+    }
+
 	@Override
 	public void post(E event) {
 		// If event is null we cannot fetch the data class type

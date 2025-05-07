@@ -16,6 +16,11 @@ public class NOPTopic<E> implements Topic<E> {
 	}
 
 	@Override
+	public void removeHandler(EventHandler<E> handler) {
+		// NOP
+	}
+
+	@Override
 	public void post(E event) {
 		// NOP
 	}

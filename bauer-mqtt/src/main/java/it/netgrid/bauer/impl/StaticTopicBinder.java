@@ -1,6 +1,7 @@
 package it.netgrid.bauer.impl;
 
 import org.eclipse.paho.mqttv5.client.MqttClient;
+import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,28 +40,30 @@ public class StaticTopicBinder implements TopicFactoyBinder {
 
     private static final String topicFactoryClassStr = MqttTopicFactory.class.getName();
 
-
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
      */
     private ITopicFactory topicFactory;
 
-    private StaticTopicBinder() {}
+    private StaticTopicBinder() {
+    }
 
     public ITopicFactory getTopicFactory() {
-        if(topicFactory == null) {
+        if (topicFactory == null) {
             MqttConfigFromPropertiesProvider cp = new MqttConfigFromPropertiesProvider(TopicFactory.getProperties());
 
             try {
                 // Build client and manager for mqtt connection handling
-                MqttClient client = new MqttClient(cp.config().url(), cp.config().clientId());
+                MqttClient client = new MqttClient(cp.config().url(), cp.config().clientId(),
+                        // Avoid using file persistence because it can lead to dirty state startup
+                        new MemoryPersistence());
                 MqttClientManager mqttClientManager = new ThreadedMqttClientManager(client, cp.config());
-    
+
                 // Build topic factory
                 MqttMessageFactory messageFactory = cp.config().getMessageFactory();
                 topicFactory = new MqttTopicFactory(mqttClientManager, messageFactory);
-    
+
                 // Open MQTT connection
                 mqttClientManager.safeFirstConnection();
             } catch (MqttException e) {
